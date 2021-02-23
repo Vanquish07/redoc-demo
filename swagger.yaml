@@ -1,0 +1,3577 @@
+openapi: 3.0.1
+info:
+  title: Estes Express API Suite
+  description: APIs provided by Estes Express to partners
+  version: 1.11.5
+servers:
+  - url: https://dev-cloudapi.estes-express.com
+paths:
+  /authenticate:
+    post:
+      tags:
+        - Authentication
+      summary: Validate user credentials
+      description: Provides a bearer token for an authenticated user that is required to
+        access other APIs. The credentials of the user should be passed in the
+        request using an Authorization header of the Basic authentication type.
+      responses:
+        "200":
+          description: OK (Successfully authenticated.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "401":
+          description: Authentication information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "403":
+          description: Not authorized to account's data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1authenticate/post/responses/401/content/applicatio\
+                  n~1json/schema"
+        "500":
+          description: Internal server error.
+          content: {}
+        "503":
+          description: Service unavailable.
+          content: {}
+      security:
+        - BasicAuth: []
+        - ApiKeyAuth: []
+  /v1/invoices:
+    get:
+      tags:
+        - Invoice
+      summary: Freight Invoices
+      description: Returns specific invoice(s) corresponding to the provided reference
+        number. Requires a valid bearer token in the Authorization header of the
+        request.
+      parameters:
+        - name: pro
+          in: query
+          description: PRO tracking number
+          schema:
+            type: string
+            pattern: $\d{10}
+        - name: latest
+          in: query
+          description: Set to true to get only the most recent version of the invoice when
+            looking up by PRO number.
+          schema:
+            type: boolean
+            default: false
+        - name: embedImage
+          in: query
+          description: Set to true to get an image of the invoice when searching by PRO
+            number for the most recent version of the invoice.
+          schema:
+            type: boolean
+            default: false
+        - name: po
+          in: query
+          description: Purchase order number
+          schema:
+            maxLength: 15
+            minLength: 1
+            type: string
+        - name: bol
+          in: query
+          description: Bill of lading number
+          schema:
+            maxLength: 25
+            minLength: 1
+            type: string
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain one or more invoices in the array.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        invoiceID:
+                          type: string
+                        trailerNumber:
+                          type: string
+                        issueDate:
+                          type: string
+                          format: date
+                        note:
+                          type: array
+                          items:
+                            type: string
+                        pro:
+                          type: string
+                        dueDate:
+                          type: string
+                          format: date
+                        consignorAssignedID:
+                          type: string
+                        consigneeParty:
+                          type: object
+                          properties:
+                            partyIdentification:
+                              type: array
+                              items:
+                                type: string
+                            partyName:
+                              type: string
+                            addressLine:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            postalCode:
+                              type: string
+                            state:
+                              type: string
+                            telephone:
+                              type: string
+                            country:
+                              type: string
+                        shipperParty:
+                          $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
+                            pplication~1json/schema/properties/data/items/prope\
+                            rties/consigneeParty"
+                        po:
+                          type: string
+                        bol:
+                          type: string
+                        additionalDocumentReference:
+                          type: array
+                          description: The additional document reference contains
+                            additional BOL & PO numbers, and other document
+                            references
+                          items:
+                            type: object
+                            properties:
+                              documentType:
+                                type: string
+                              id:
+                                type: string
+                              documentTypeCode:
+                                type: string
+                                example: BOL
+                        accountingSupplierParty:
+                          $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
+                            pplication~1json/schema/properties/data/items/prope\
+                            rties/consigneeParty"
+                        accountingCustomerParty:
+                          $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
+                            pplication~1json/schema/properties/data/items/prope\
+                            rties/consigneeParty"
+                        allowanceCharge:
+                          type: object
+                          properties:
+                            discountFunction:
+                              type: string
+                              example: X
+                            totalDiscount:
+                              type: string
+                              example: "50.00"
+                            totalDiscountPercentage:
+                              type: string
+                              example: "0.500"
+                        payableAmount:
+                          type: number
+                          format: double
+                        chargeTotalAmount:
+                          type: number
+                          format: double
+                        amountPaid:
+                          type: number
+                          format: double
+                        invoiceLine:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              note:
+                                type: array
+                                items:
+                                  type: string
+                              quantity:
+                                type: integer
+                                format: int64
+                              lineExtensionAmount:
+                                type: number
+                                format: double
+                              itemDescription:
+                                type: string
+                              hazardousCategoryCode:
+                                type: string
+                              weight:
+                                type: integer
+                                format: int64
+                              documentReference:
+                                type: array
+                                description: This contains BOL number and PO number for
+                                  each invoice line item
+                                items:
+                                  type: object
+                                  properties:
+                                    documentType:
+                                      type: string
+                                    id:
+                                      type: string
+                                    documentTypeCode:
+                                      type: string
+                              commodityCode:
+                                type: string
+                        firstArrivalPortLocation:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            description:
+                              type: string
+                        lastExitPortLocation:
+                          $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
+                            pplication~1json/schema/properties/data/items/prope\
+                            rties/firstArrivalPortLocation"
+                        grossWeightMeasure:
+                          type: number
+                          format: int32
+                        invoiceType:
+                          type: string
+                        scacCode:
+                          type: string
+                        pickupDate:
+                          type: string
+                        deliveryDate:
+                          type: string
+                        billingTerms:
+                          type: string
+                        images:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              url:
+                                type: string
+                              documentType:
+                                type: string
+                              data:
+                                type: string
+                              contentType:
+                                type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "400":
+          description: Invalid or missing reference number (PRO, PO, or BOL number). Data
+            object array will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1invoices/get/responses/200/content/applica\
+                      tion~1json/schema/properties/error"
+        "403":
+          description: Not authorized. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1invoices/get/responses/400/content/application\
+                  ~1json/schema"
+        "404":
+          description: Matching invoice not found. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1invoices/get/responses/400/content/application\
+                  ~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1invoices/get/responses/400/content/application\
+                  ~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/shipments:
+    get:
+      tags:
+        - Shipments
+      summary: A List of Recent Shipments
+      description: Returns details of shipments associated with an account in the past 14
+        days or a specified date range. Requires a valid bearer token in the
+        Authorization header of the request.
+      parameters:
+        - name: role
+          in: query
+          description: The role of the account in the shipment.
+          required: true
+          schema:
+            type: string
+            enum:
+              - shipper
+              - consignee
+              - third-party-payor
+        - name: sub-account
+          in: query
+          description: Sub-account number, if passed in, will be used to look up shipments.
+          schema:
+            type: string
+        - name: start-date
+          in: query
+          description: The beginning of the date range (in the YYYYMMDD format) for which
+            shipments will be returned.
+          required: false
+          schema:
+            type: string
+        - name: end-date
+          in: query
+          description: The end of the date range (in the YYYYMMDD format) for which
+            shipments will be returned.
+          required: false
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain at least one shipment in the array.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pro:
+                          type: string
+                        bol:
+                          type: string
+                        po:
+                          type: string
+                        pickupDate:
+                          type: string
+                        status:
+                          type: string
+                        eventTimeStamp:
+                          type: string
+                        movementHistory:
+                          type: string
+                        estimatedDeliveryDate:
+                          type: string
+                        estimatedDeliveryTime:
+                          type: string
+                        receivedBy:
+                          type: string
+                        appointment:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                            time:
+                              type: string
+                            status:
+                              type: string
+                        pieces:
+                          type: string
+                        dimensionalWeight:
+                          type: string
+                        weight:
+                          type: string
+                        shipper:
+                          type: object
+                          properties:
+                            referenceNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              type: object
+                              properties:
+                                line1:
+                                  type: string
+                                line2:
+                                  type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                countryCode:
+                                  type: string
+                        consignee:
+                          type: object
+                          properties:
+                            referenceNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments/get/responses/200/cont\
+                                ent/application~1json/schema/properties/data/it\
+                                ems/properties/shipper/properties/address"
+                        thirdParty:
+                          type: object
+                          properties:
+                            referenceNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments/get/responses/200/cont\
+                                ent/application~1json/schema/properties/data/it\
+                                ems/properties/shipper/properties/address"
+                        destinationTerminal:
+                          type: object
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments/get/responses/200/cont\
+                                ent/application~1json/schema/properties/data/it\
+                                ems/properties/shipper/properties/address"
+                            phone:
+                              type: object
+                              properties:
+                                country:
+                                  type: string
+                                areaCode:
+                                  type: string
+                                subscriber:
+                                  type: string
+                                extenstion:
+                                  type: string
+                            fax:
+                              type: object
+                              properties:
+                                areaCode:
+                                  type: string
+                                subscriber:
+                                  type: string
+                        interlineInfo:
+                          type: object
+                          properties:
+                            scacCode:
+                              type: string
+                            name:
+                              type: string
+                            type:
+                              type: string
+                        freightCharges:
+                          type: string
+                        messages:
+                          type: object
+                          properties:
+                            message:
+                              type: array
+                              items:
+                                type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "400":
+          description: Missing or invalid query parameter. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1shipments/get/responses/200/content/applic\
+                      ation~1json/schema/properties/error"
+        "403":
+          description: Not authorized. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments/get/responses/400/content/applicatio\
+                  n~1json/schema"
+        "404":
+          description: No shipments found. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments/get/responses/400/content/applicatio\
+                  n~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments/get/responses/400/content/applicatio\
+                  n~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/shipments/status:
+    get:
+      tags:
+        - Shipments
+      summary: Shipment Tracking
+      description: Returns details of shipment status based on PRO or Reference Number.
+        <br> Either a PRO or Reference Number (PO, BOL, LOD, or interline-pro)
+        is required. <br> If not a payer on the shipment, financial charge
+        information will be excluded from the response. <br> If not authorized
+        for the shipment, a redacted payload will be returned. <br> Requires a
+        valid bearer token in the Authorization header of the request.
+      parameters:
+        - name: pro
+          in: query
+          description: PRO-tracking number
+          schema:
+            type: string
+        - name: po
+          in: query
+          description: Purchase Order number
+          schema:
+            type: string
+        - name: bol
+          in: query
+          description: Bill Of Lading number
+          schema:
+            type: string
+        - name: lod
+          in: query
+          description: Load number for shipment tracking
+          schema:
+            type: string
+        - name: interline-pro
+          in: query
+          description: Interline pro for shipment tracking
+          schema:
+            type: string
+        - name: party-to
+          in: query
+          description: For PO, BOL, LOD, or Interline-pro lookups, determines whether to
+            only see results which your account is party to, or all results for
+            the reference number
+          required: false
+          schema:
+            type: boolean
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain full shipment status for authorized PROs
+            and redacted payloads for unauthorized PROs.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pro:
+                          type: string
+                        documentReference:
+                          type: array
+                          description: The document reference contains additional BOL & PO
+                            numbers, and other document references
+                          items:
+                            type: object
+                            properties:
+                              ID:
+                                type: string
+                              documentType:
+                                type: string
+                        pickupRequestNumber:
+                          type: string
+                        pickupDate:
+                          type: string
+                        status:
+                          type: object
+                          properties:
+                            conciseStatus:
+                              type: string
+                            expandedStatus:
+                              type: string
+                            referenceDate:
+                              type: string
+                            referenceTime:
+                              type: string
+                            reasonCode:
+                              type: string
+                            reason:
+                              type: string
+                            quantity:
+                              type: string
+                            packageType:
+                              type: string
+                            packageDescription:
+                              type: string
+                        deliveryDate:
+                          type: string
+                        deliveryTime:
+                          type: string
+                        receivedBy:
+                          type: string
+                        estimatedDelivery:
+                          type: object
+                          properties:
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                        driverInfo:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            geoCoordinates:
+                              type: array
+                              items:
+                                type: string
+                            stopsAway:
+                              type: string
+                        appointment:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                        appointmentHistory:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              status:
+                                type: string
+                              startDate:
+                                type: string
+                              startTime:
+                                type: string
+                              endDate:
+                                type: string
+                              endTime:
+                                type: string
+                              createdDate:
+                                type: string
+                              createdTime:
+                                type: string
+                        piecesCount:
+                          type: string
+                        totalWeight:
+                          type: string
+                        consigneeParty:
+                          type: object
+                          properties:
+                            accountNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              type: object
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                        shipperParty:
+                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
+                            content/application~1json/schema/properties/data/it\
+                            ems/properties/consigneeParty"
+                        thirdParty:
+                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
+                            content/application~1json/schema/properties/data/it\
+                            ems/properties/consigneeParty"
+                        destinationTerminal:
+                          type: object
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments~1status/get/responses/\
+                                200/content/application~1json/schema/properties\
+                                /data/items/properties/consigneeParty/propertie\
+                                s/address"
+                            telephone:
+                              type: string
+                            fax:
+                              type: string
+                            email:
+                              type: string
+                        interlineInfo:
+                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
+                            content/application~1json/schema/properties/data/it\
+                            ems/properties/consigneeParty"
+                        freightCharges:
+                          type: string
+                        interlinePro:
+                          type: string
+                        disclaimers:
+                          type: array
+                          items:
+                            type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "400":
+          description: Missing or invalid path parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/conten\
+                      t/application~1json/schema/properties/error"
+        "403":
+          description: Not authorized. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "404":
+          description: No shipments found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/shipments/history:
+    get:
+      tags:
+        - Shipments
+      summary: Shipment Tracking History
+      description: Returns details of shipment history based on PRO or Reference Number.
+        <br> Either a PRO or Reference Number (PO, BOL, LOD, or interline-pro)
+        is required. <br> If not a payer on the shipment, financial charge
+        information will be excluded from the response. <br> If not authorized
+        for the shipment, a redacted payload will be returned. <br> Requires a
+        valid bearer token in the Authorization header of the request.
+      parameters:
+        - name: pro
+          in: query
+          description: PRO-tracking number
+          schema:
+            type: string
+        - name: po
+          in: query
+          description: Purchase Order number
+          schema:
+            type: string
+        - name: bol
+          in: query
+          description: Bill Of Lading number
+          schema:
+            type: string
+        - name: lod
+          in: query
+          description: Load number for shipment tracking
+          schema:
+            type: string
+        - name: interline-pro
+          in: query
+          description: Interline pro for shipment tracking
+          schema:
+            type: string
+        - name: party-to
+          in: query
+          description: For PO, BOL, LOD, or Interline-pro lookups, determines whether to
+            only see results which your account is party to, or all results for
+            the reference number
+          required: false
+          schema:
+            type: boolean
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Returns details of shipment history based on PRO
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pro:
+                          type: string
+                        documentReference:
+                          type: array
+                          description: The document reference contains additional BOL & PO
+                            numbers, and other document references
+                          items:
+                            type: object
+                            properties:
+                              ID:
+                                type: string
+                              documentType:
+                                type: string
+                        pickupRequestNumber:
+                          type: string
+                        pickupDate:
+                          type: string
+                        status:
+                          type: object
+                          properties:
+                            conciseStatus:
+                              type: string
+                            expandedStatus:
+                              type: string
+                            referenceDate:
+                              type: string
+                            referenceTime:
+                              type: string
+                            reasonCode:
+                              type: string
+                            reason:
+                              type: string
+                            quantity:
+                              type: string
+                            packageType:
+                              type: string
+                            packageDescription:
+                              type: string
+                        deliveryDate:
+                          type: string
+                        deliveryTime:
+                          type: string
+                        receivedBy:
+                          type: string
+                        estimatedDelivery:
+                          type: object
+                          properties:
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                        driverInfo:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            geoCoordinates:
+                              type: array
+                              items:
+                                type: string
+                            stopsAway:
+                              type: string
+                        appointment:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                        appointmentHistory:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              status:
+                                type: string
+                              startDate:
+                                type: string
+                              startTime:
+                                type: string
+                              endDate:
+                                type: string
+                              endTime:
+                                type: string
+                              createdDate:
+                                type: string
+                              createdTime:
+                                type: string
+                        piecesCount:
+                          type: string
+                        totalWeight:
+                          type: string
+                        consigneeParty:
+                          type: object
+                          properties:
+                            accountNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              type: object
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                        shipperParty:
+                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
+                            /content/application~1json/schema/properties/data/i\
+                            tems/properties/consigneeParty"
+                        thirdParty:
+                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
+                            /content/application~1json/schema/properties/data/i\
+                            tems/properties/consigneeParty"
+                        destinationTerminal:
+                          type: object
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments~1history/get/responses\
+                                /200/content/application~1json/schema/propertie\
+                                s/data/items/properties/consigneeParty/properti\
+                                es/address"
+                            telephone:
+                              type: string
+                            fax:
+                              type: string
+                            email:
+                              type: string
+                        interlineInfo:
+                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
+                            /content/application~1json/schema/properties/data/i\
+                            tems/properties/consigneeParty"
+                        freightCharges:
+                          type: string
+                        interlinePro:
+                          type: string
+                        disclaimers:
+                          type: array
+                          items:
+                            type: string
+                        movementHistory:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              description:
+                                type: string
+                              location:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  code:
+                                    type: string
+                                  address:
+                                    type: array
+                                    items:
+                                      $ref: "#/paths/~1v1~1shipments~1history/get/r\
+                                        esponses/200/content/application~1json/\
+                                        schema/properties/data/items/properties\
+                                        /consigneeParty/properties/address"
+                                  geoCoordinates:
+                                    type: array
+                                    items:
+                                      type: string
+                              contact:
+                                type: object
+                                properties:
+                                  telephone:
+                                    type: string
+                                  fax:
+                                    type: string
+                              transportEventTypeCode:
+                                type: string
+                              statusHistory:
+                                type: array
+                                items:
+                                  $ref: "#/paths/~1v1~1shipments~1history/get/respo\
+                                    nses/200/content/application~1json/schema/p\
+                                    roperties/data/items/properties/status"
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "403":
+          description: Not authorized. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1shipments~1history/get/responses/200/conte\
+                      nt/application~1json/schema/properties/error"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1shipments~1history/get/responses/403/content/a\
+                  pplication~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/pickup-requests:
+    post:
+      tags:
+        - Pickup
+      summary: Pickup request
+      description: Create a new pickup request. The request should include an Authorization
+        header with a valid bearer token corresponding to the user associated
+        with the pickup request.
+      requestBody:
+        description: Complete details to create a new pickup request.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipper:
+                  properties:
+                    name:
+                      type: string
+                    accountCode:
+                      type: string
+                    address:
+                      required:
+                        - type
+                        - line1
+                        - city
+                        - state
+                        - postalCode
+                        - postalCode4
+                        - country
+                      properties:
+                        line1:
+                          type: string
+                        line2:
+                          type: string
+                        city:
+                          type: string
+                        state:
+                          type: string
+                        postalCode:
+                          type: string
+                        postalCode4:
+                          type: string
+                        country:
+                          type: string
+                      type: object
+                    contacts:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            properties:
+                              firstName:
+                                type: string
+                              middleName:
+                                type: string
+                              lastName:
+                                type: string
+                            type: object
+                          email:
+                            type: string
+                          phone:
+                            properties:
+                              areaCode:
+                                type: number
+                              number:
+                                type: number
+                              extension:
+                                type: number
+                            type: object
+                          fax:
+                            properties:
+                              areaCode:
+                                type: number
+                              number:
+                                type: number
+                            type: object
+                          receiveNotifications:
+                            type: string
+                          notificationMethod:
+                            type: string
+                requestAction:
+                  type: string
+                paymentTerms:
+                  type: string
+                pickupDate:
+                  type: string
+                pickupStartTime:
+                  type: string
+                pickupEndTime:
+                  type: string
+                totalPieces:
+                  type: string
+                totalWeight:
+                  type: string
+                totalHandlingUnits:
+                  type: string
+                hazmatFlag:
+                  type: string
+                expeditedCode:
+                  type: string
+                whoRequested:
+                  type: string
+                trailers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      length:
+                        type: string
+                      type:
+                        type: string
+                referenceNumbers:
+                  type: array
+                  example:
+                    - referenceInfo:
+                        type: PRO
+                        value: "0062020915"
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: PON
+                        value: API31082020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: BOL
+                        value: API08312020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: EUI
+                        value: APIE10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: LDN
+                        value: APIL10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: SNO
+                        value: APIS10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      value:
+                        type: string
+                      required:
+                        type: string
+                      totalPieces:
+                        type: number
+                      totalWeight:
+                        type: number
+                commodities:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      packageCode:
+                        type: string
+                      description:
+                        type: string
+                      hazmat:
+                        required:
+                          - hazmatCode
+                          - hazmatFlag
+                        properties:
+                          hazmatCode:
+                            type: string
+                          hazmatFlag:
+                            type: string
+                        type: object
+                      pieces:
+                        type: string
+                      weight:
+                        type: string
+                      nmfcNumber:
+                        type: string
+                      nmfcSubNumber:
+                        type: string
+                comments:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - text
+                    properties:
+                      type:
+                        type: string
+                      text:
+                        type: string
+                addresses:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - line1
+                      - city
+                      - state
+                      - postalCode
+                      - postalCode4
+                      - country
+                    properties:
+                      type:
+                        type: string
+                      line1:
+                        type: string
+                      line2:
+                        type: string
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      postalCode:
+                        type: string
+                      postalCode4:
+                        type: string
+                      country:
+                        type: string
+                contacts:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - name
+                      - email
+                      - phone
+                      - fax
+                      - receiveNotifications
+                      - notificationMethod
+                    properties:
+                      type:
+                        type: string
+                      name:
+                        required:
+                          - firstName
+                          - middleName
+                          - lastName
+                        properties:
+                          firstName:
+                            type: string
+                          middleName:
+                            type: string
+                          lastName:
+                            type: string
+                        type: object
+                      email:
+                        type: string
+                      phone:
+                        required:
+                          - areaCode
+                          - number
+                          - extension
+                        properties:
+                          areaCode:
+                            type: string
+                          number:
+                            type: string
+                          extension:
+                            type: string
+                        type: object
+                      fax:
+                        required:
+                          - areaCode
+                          - number
+                        properties:
+                          areaCode:
+                            type: number
+                          number:
+                            type: number
+                        type: object
+                      receiveNotifications:
+                        type: string
+                      notificationMethod:
+                        type: string
+                notifications:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                    properties:
+                      type:
+                        type: string
+        required: false
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Data object will contain the newly created pickup request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      requestNumber:
+                        type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+                      validationFailures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                            field:
+                              type: string
+        "400":
+          description: Missing or invalid body params. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  error:
+                    $ref: "#/paths/~1v1~1pickup-requests/post/responses/201/content\
+                      /application~1json/schema/properties/error"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+      x-codegen-request-body-name: New Pickup Request
+  "/v1/pickup-requests/{requestNumber}":
+    get:
+      tags:
+        - Pickup
+      summary: Pickup request
+      description: Returns details of pickup request associated with a specific request
+        number. The request should include an Authorization header with a valid
+        bearer token corresponding to the user associated with the pickup
+        request.
+      parameters:
+        - name: requestNumber
+          in: path
+          description: The pickup request number
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain the pickup request details for that
+            specific request number.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        requestNumber:
+                          type: string
+                        pro:
+                          type: string
+                        status:
+                          properties:
+                            description:
+                              type: string
+                            reason:
+                              type: string
+                            reasonCode:
+                              type: string
+                          type: object
+                        shipper:
+                          properties:
+                            name:
+                              type: string
+                            accountCode:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            contacts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                  name:
+                                    type: string
+                                  email:
+                                    type: string
+                                  phone:
+                                    type: string
+                                  fax:
+                                    type: string
+                                  receiveNotifications:
+                                    type: string
+                                  notificationMethod:
+                                    type: string
+                          type: object
+                        requestAction:
+                          type: string
+                        paymentTerms:
+                          type: string
+                        totalPieces:
+                          type: number
+                        totalWeight:
+                          type: number
+                        totalHandlingUnits:
+                          type: number
+                        hazmatFlag:
+                          type: string
+                        expeditedCode:
+                          type: string
+                        whoRequested:
+                          type: string
+                        userName:
+                          type: string
+                        userAccount:
+                          type: string
+                        pickupDate:
+                          type: string
+                        pickupStartTime:
+                          type: string
+                        pickupEndTime:
+                          type: string
+                        appointmentHistory:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                startDate:
+                                  type: string
+                                startTime:
+                                  type: string
+                                endDate:
+                                  type: string
+                                endTime:
+                                  type: string
+                                createdDate:
+                                  type: string
+                                createdTime:
+                                  type: string
+                        transportEvent:
+                          properties:
+                            driver:
+                              type: string
+                            driverCoordinates:
+                              type: array
+                              items:
+                                type: string
+                            estimatedPickupDate:
+                              type: string
+                            estimatedPickupTime:
+                              type: string
+                            stopsAway:
+                              type: string
+                            lastUpdatedDate:
+                              type: string
+                            lastUpdatedTime:
+                              type: string
+                          type: object
+                        trailers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              length:
+                                type: string
+                              type:
+                                type: string
+                        referenceNumbers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              value:
+                                type: string
+                        commodities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                              packageCode:
+                                type: string
+                              description:
+                                type: string
+                              hazmat:
+                                properties:
+                                  hazmatCode:
+                                    type: string
+                                  hazmatFlag:
+                                    type: string
+                                type: object
+                              pieces:
+                                type: number
+                              weight:
+                                type: number
+                              nmfcNumber:
+                                type: string
+                              nmfcSubNumber:
+                                type: string
+                        comments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              text:
+                                type: string
+                        addresses:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              line:
+                                type: array
+                                items:
+                                  type: string
+                              city:
+                                type: string
+                              state:
+                                type: string
+                              postalCode:
+                                type: string
+                              country:
+                                type: string
+                        contacts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              phone:
+                                type: string
+                              fax:
+                                type: string
+                              receiveNotifications:
+                                type: string
+                              notificationMethod:
+                                type: string
+                        notifications:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                        originTerminal:
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            telephone:
+                              type: string
+                            fax:
+                              type: string
+                            email:
+                              type: string
+                          type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+                      validationFailures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                            field:
+                              type: string
+        "400":
+          description: Missing or invalid path parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  error:
+                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
+                      esponses/200/content/application~1json/schema/properties/\
+                      error"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "403":
+          description: Not authorized. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "404":
+          description: No pickup request found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+    put:
+      tags:
+        - Pickup
+      summary: Pickup Request
+      description: Update specific pickup request associated with an account. The request
+        should include an Authorization header with a valid bearer token
+        corresponding to the user associated with the pickup request.
+      parameters:
+        - name: requestNumber
+          in: path
+          description: The pickup request number used to update a specific pickup request.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details to be updated for a specific pickup request.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestNumber:
+                  type: string
+                shipper:
+                  required:
+                    - name
+                    - accountCode
+                    - address
+                    - contacts
+                  properties:
+                    name:
+                      type: string
+                    accountCode:
+                      type: string
+                    address:
+                      required:
+                        - line1
+                        - city
+                        - state
+                        - postalCode
+                        - postalCode4
+                        - country
+                      properties:
+                        line1:
+                          type: string
+                        line2:
+                          type: string
+                        city:
+                          type: string
+                        state:
+                          type: string
+                        postalCode:
+                          type: string
+                        postalCode4:
+                          type: string
+                        country:
+                          type: string
+                      type: object
+                    contacts:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - name
+                          - email
+                          - phone
+                          - fax
+                          - receiveNotifications
+                          - notificationMethod
+                        properties:
+                          id:
+                            type: number
+                          operationType:
+                            type: string
+                          name:
+                            required:
+                              - firstName
+                              - middleName
+                              - lastName
+                            properties:
+                              firstName:
+                                type: string
+                              middleName:
+                                type: string
+                              lastName:
+                                type: string
+                            type: object
+                          email:
+                            type: string
+                          phone:
+                            required:
+                              - areaCode
+                              - number
+                              - extension
+                            properties:
+                              areaCode:
+                                type: number
+                              number:
+                                type: number
+                              extension:
+                                type: number
+                            type: object
+                          fax:
+                            required:
+                              - areaCode
+                              - number
+                            properties:
+                              areaCode:
+                                type: number
+                              number:
+                                type: number
+                            type: object
+                          receiveNotifications:
+                            type: string
+                          notificationMethod:
+                            type: string
+                requestAction:
+                  type: string
+                paymentTerms:
+                  type: string
+                pickupDate:
+                  type: string
+                pickupStartTime:
+                  type: string
+                pickupEndTime:
+                  type: string
+                totalPieces:
+                  type: string
+                totalWeight:
+                  type: string
+                totalHandlingUnits:
+                  type: string
+                hazmatFlag:
+                  type: string
+                expeditedCode:
+                  type: string
+                whoRequested:
+                  type: string
+                trailers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      length:
+                        type: string
+                      type:
+                        type: string
+                referenceNumbers:
+                  type: array
+                  example:
+                    - referenceInfo:
+                        type: PRO
+                        value: "0062020915"
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: PON
+                        value: API31082020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: BOL
+                        value: API08312020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: EUI
+                        value: APIE10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: LDN
+                        value: APIL10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                    - referenceInfo:
+                        type: SNO
+                        value: APIS10022020
+                        required: N
+                        totalPieces: 0
+                        totalWeight: 0
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      type:
+                        type: string
+                      value:
+                        type: string
+                      required:
+                        type: string
+                      totalPieces:
+                        type: number
+                      totalWeight:
+                        type: number
+                commodities:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      code:
+                        type: string
+                      packageCode:
+                        type: string
+                      description:
+                        type: string
+                      hazmat:
+                        type: object
+                        properties:
+                          hazmatCode:
+                            type: string
+                          hazmatFlag:
+                            type: string
+                      pieces:
+                        type: string
+                      weight:
+                        type: string
+                      nmfcNumber:
+                        type: string
+                      nmfcSubNumber:
+                        type: string
+                comments:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      type:
+                        type: string
+                      text:
+                        type: string
+                addresses:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      type:
+                        type: string
+                      line1:
+                        type: string
+                      line2:
+                        type: string
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      postalCode:
+                        type: string
+                      postalCode4:
+                        type: string
+                      country:
+                        type: string
+                contacts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      type:
+                        type: string
+                      name:
+                        properties:
+                          firstName:
+                            type: string
+                          middleName:
+                            type: string
+                          lastName:
+                            type: string
+                        type: object
+                      email:
+                        type: string
+                      phone:
+                        properties:
+                          areaCode:
+                            type: string
+                          number:
+                            type: string
+                          extension:
+                            type: string
+                        type: object
+                      fax:
+                        properties:
+                          areaCode:
+                            type: number
+                          number:
+                            type: number
+                        type: object
+                      receiveNotifications:
+                        type: string
+                      notificationMethod:
+                        type: string
+                notifications:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      operationType:
+                        type: string
+                      type:
+                        type: string
+        required: false
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain the updated pickup request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      requestNumber:
+                        type: string
+                  error:
+                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
+                      esponses/200/content/application~1json/schema/properties/\
+                      error"
+        "400":
+          description: Missing or invalid path or/and body params. Data object will be
+            empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "404":
+          description: No pickup request found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+      x-codegen-request-body-name: Change Pickup Request
+    delete:
+      tags:
+        - Pickup
+      summary: Pickup Request
+      description: Delete pickup request associated with an account. The request should
+        include an Authorization header with a valid bearer token corresponding
+        to the user associated with the pickup request.
+      parameters:
+        - name: requestNumber
+          in: path
+          description: The pickup request number used to delete a specific pickup request.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Contains comment to be saved
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    text:
+                      type: string
+        required: false
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain request number of the specific pickup
+            request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/put/respo\
+                  nses/200/content/application~1json/schema"
+        "400":
+          description: Missing or invalid path parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "404":
+          description: No pickup request found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/search/pickup-requests:
+    get:
+      tags:
+        - Search Pickups
+      summary: Search pickup request
+      description: Displays pickup requests matching the specified search criteria.
+      parameters:
+        - name: request-number
+          in: query
+          description: The pickup request number
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Data object will contain the pickup request details for the specific
+            criteria.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        requestNumber:
+                          type: string
+                        pro:
+                          type: string
+                        status:
+                          properties:
+                            description:
+                              type: string
+                            reason:
+                              type: string
+                            reasonCode:
+                              type: string
+                          type: object
+                        shipper:
+                          properties:
+                            name:
+                              type: string
+                            accountCode:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            contacts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                  name:
+                                    type: string
+                                  email:
+                                    type: string
+                                  phone:
+                                    type: string
+                                  fax:
+                                    type: string
+                                  receiveNotifications:
+                                    type: string
+                                  notificationMethod:
+                                    type: string
+                          type: object
+                        requestAction:
+                          type: string
+                        paymentTerms:
+                          type: string
+                        totalPieces:
+                          type: number
+                        totalWeight:
+                          type: number
+                        totalHandlingUnits:
+                          type: number
+                        hazmatFlag:
+                          type: string
+                        expeditedCode:
+                          type: string
+                        whoRequested:
+                          type: string
+                        userName:
+                          type: string
+                        userAccount:
+                          type: string
+                        pickupDate:
+                          type: string
+                        pickupStartTime:
+                          type: string
+                        pickupEndTime:
+                          type: string
+                        appointmentHistory:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                startDate:
+                                  type: string
+                                startTime:
+                                  type: string
+                                endDate:
+                                  type: string
+                                endTime:
+                                  type: string
+                                createdDate:
+                                  type: string
+                                createdTime:
+                                  type: string
+                        transportEvent:
+                          properties:
+                            driver:
+                              type: string
+                            driverCoordinates:
+                              type: array
+                              items:
+                                type: string
+                            estimatedPickupDate:
+                              type: string
+                            estimatedPickupTime:
+                              type: string
+                            stopsAway:
+                              type: string
+                            lastUpdatedDate:
+                              type: string
+                            lastUpdatedTime:
+                              type: string
+                          type: object
+                        trailers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              length:
+                                type: string
+                              type:
+                                type: string
+                        referenceNumbers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              value:
+                                type: string
+                        commodities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                              packageCode:
+                                type: string
+                              description:
+                                type: string
+                              hazmat:
+                                properties:
+                                  hazmatCode:
+                                    type: string
+                                  hazmatFlag:
+                                    type: string
+                                type: object
+                              pieces:
+                                type: number
+                              weight:
+                                type: number
+                              nmfcNumber:
+                                type: string
+                              nmfcSubNumber:
+                                type: string
+                        comments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              text:
+                                type: string
+                        addresses:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              line:
+                                type: array
+                                items:
+                                  type: string
+                              city:
+                                type: string
+                              state:
+                                type: string
+                              postalCode:
+                                type: string
+                              country:
+                                type: string
+                        contacts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              phone:
+                                type: string
+                              fax:
+                                type: string
+                              receiveNotifications:
+                                type: string
+                              notificationMethod:
+                                type: string
+                        notifications:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                        originTerminal:
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            telephone:
+                              type: string
+                            fax:
+                              type: string
+                            email:
+                              type: string
+                          type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "400":
+          description: Missing or invalid parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/20\
+                        0/content/application~1json/schema/properties/data/item\
+                        s"
+                  error:
+                    $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/200/\
+                      content/application~1json/schema/properties/error"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/400/cont\
+                  ent/application~1json/schema"
+        "404":
+          description: No pickup requests found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/400/cont\
+                  ent/application~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/400/cont\
+                  ent/application~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/search/shipments:
+    get:
+      tags:
+        - Search Shipments
+      summary: Search Shipment Tracking records
+      description: Displays Shipment tracking information matching the specified PRO search
+        criteria.
+      parameters:
+        - name: pro
+          in: query
+          description: PRO tracking number
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Data object will contain the Shipment tracking details for the
+            specific criteria.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pro:
+                          type: string
+                        currentStatus:
+                          type: string
+                        transitDays:
+                          type: string
+                        stopsAway:
+                          type: string
+                        estimatedDelivery:
+                          properties:
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                          type: object
+                        dimensionalWeight:
+                          type: string
+                        shipperReferenceNumber:
+                          type: string
+                        shipperName:
+                          type: string
+                        shipperAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        consigneeReferenceNumber:
+                          type: string
+                        consigneeName:
+                          type: string
+                        consigneeAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        thirdPartyReferenceNumber:
+                          type: string
+                        thirdPartyName:
+                          type: string
+                        thirdPartyAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        actualDeliveryDate:
+                          type: string
+                        actualDeliveryTime:
+                          type: string
+                        bbc:
+                          type: string
+                        bbcDescription:
+                          type: string
+                        totalRevenue:
+                          type: string
+                        freightTerms:
+                          type: string
+                        bol:
+                          type: array
+                          items:
+                            type: string
+                        ldn:
+                          type: array
+                          items:
+                            type: string
+                        pon:
+                          type: array
+                          items:
+                            type: string
+                        appointmentStartDate:
+                          type: string
+                        appointmentStartTime:
+                          type: string
+                        appointmentEndDate:
+                          type: string
+                        appointmentEndTime:
+                          type: string
+                        appointmentStatus:
+                          type: string
+                        pickupDate:
+                          type: string
+                        requestNumber:
+                          type: string
+                        piecesCount:
+                          type: string
+                        shipmentStatusTimestamp:
+                          type: string
+                        statusPackageType:
+                          type: string
+                        statusQuantity:
+                          type: string
+                        expandedStatus:
+                          type: string
+                        receivedBy:
+                          type: string
+                        driverName:
+                          type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+                  next:
+                    type: string
+        "400":
+          description: Missing or invalid parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1search~1shipments/get/responses/200/conten\
+                      t/application~1json/schema/properties/error"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1shipments/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "404":
+          description: No shipment tracking data found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1shipments/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1search~1shipments/get/responses/400/content/ap\
+                  plication~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  "/v1/accounts/{account}/shipments":
+    get:
+      tags:
+        - Search Shipments
+      summary: Search Shipment Tracking records
+      description: Displays Shipment tracking information matching the specified account,
+        in sets of 100. <br> The next set of 100 records can be accessed via the
+        "next" URI string in the response JSON, until there are fewer than 100
+        records remaining.
+      parameters:
+        - name: account
+          in: path
+          description: The account number to retrieve Shipments for
+          required: true
+          schema:
+            type: string
+        - name: delivered
+          in: query
+          description: Set to true to retrieve Shipments delivered in the past 7 days. Set
+            to false to retrieve undelivered Shipments. Defaults to false
+          required: false
+          schema:
+            type: boolean
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Data array will contain the Shipment tracking details for the
+            specific criteria. Next string will contain URI for next set of
+            records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pro:
+                          type: string
+                        currentStatus:
+                          type: string
+                        transitDays:
+                          type: string
+                        stopsAway:
+                          type: string
+                        estimatedDelivery:
+                          properties:
+                            startDate:
+                              type: string
+                            startTime:
+                              type: string
+                            endDate:
+                              type: string
+                            endTime:
+                              type: string
+                          type: object
+                        dimensionalWeight:
+                          type: string
+                        shipperReferenceNumber:
+                          type: string
+                        shipperName:
+                          type: string
+                        shipperAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        consigneeReferenceNumber:
+                          type: string
+                        consigneeName:
+                          type: string
+                        consigneeAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        thirdPartyReferenceNumber:
+                          type: string
+                        thirdPartyName:
+                          type: string
+                        thirdPartyAddress:
+                          properties:
+                            line:
+                              type: array
+                              items:
+                                type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            postalCode:
+                              type: string
+                            country:
+                              type: string
+                          type: object
+                        actualDeliveryDate:
+                          type: string
+                        actualDeliveryTime:
+                          type: string
+                        bbc:
+                          type: string
+                        bbcDescription:
+                          type: string
+                        totalRevenue:
+                          type: string
+                        freightTerms:
+                          type: string
+                        bol:
+                          type: array
+                          items:
+                            type: string
+                        ldn:
+                          type: array
+                          items:
+                            type: string
+                        pon:
+                          type: array
+                          items:
+                            type: string
+                        appointmentStartDate:
+                          type: string
+                        appointmentStartTime:
+                          type: string
+                        appointmentEndDate:
+                          type: string
+                        appointmentEndTime:
+                          type: string
+                        appointmentStatus:
+                          type: string
+                        pickupDate:
+                          type: string
+                        requestNumber:
+                          type: string
+                        piecesCount:
+                          type: string
+                        shipmentStatusTimestamp:
+                          type: string
+                        statusPackageType:
+                          type: string
+                        statusQuantity:
+                          type: string
+                        expandedStatus:
+                          type: string
+                        receivedBy:
+                          type: string
+                        driverName:
+                          type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+                  next:
+                    type: string
+        "400":
+          description: Missing or invalid parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1accounts~1%7Baccount%7D~1shipments/get/res\
+                      ponses/200/content/application~1json/schema/properties/er\
+                      ror"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1accounts~1%7Baccount%7D~1shipments/get/respons\
+                  es/400/content/application~1json/schema"
+        "404":
+          description: No shipment tracking data found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1accounts~1%7Baccount%7D~1shipments/get/respons\
+                  es/400/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1accounts~1%7Baccount%7D~1shipments/get/respons\
+                  es/400/content/application~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  /v1/api-consumers:
+    post:
+      tags:
+        - API Consumer
+      summary: Create a new consumer
+      description: Creates a consumer record with credentials to provide the user. Note
+        that this response is the only time the Client Secret will be provided.
+      requestBody:
+        description: Metadata to be stored along with consumers in MongoDB.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiConsumerName
+                - developerName
+                - developerTitle
+                - developerEmail
+                - developerCompany
+              properties:
+                apiConsumerName:
+                  type: string
+                developerName:
+                  type: string
+                developerTitle:
+                  type: string
+                developerEmail:
+                  type: string
+                developerCompany:
+                  type: string
+        required: true
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "201":
+          description: Successfully Created. Data object will contain the newly created
+            consumer record with ClientID & ClientSecret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        apiClientId:
+                          type: string
+                        apiClientSecret:
+                          type: string
+                        apiConsumerName:
+                          type: string
+                        developerName:
+                          type: string
+                        developerTitle:
+                          type: string
+                        developerEmail:
+                          type: string
+                        developerCompany:
+                          type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  error:
+                    $ref: "#/paths/~1v1~1api-consumers/post/responses/201/content/a\
+                      pplication~1json/schema/properties/error"
+        "401":
+          description: Authentication information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "409":
+          description: conflict with existing record
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+    get:
+      tags:
+        - API Consumer
+      summary: Get a set of Consumers
+      description: Gets all TMS user consumer records. This includes the stored metadata
+        about the users, but does not include Client Secrets.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          apiClientId:
+                            type: string
+                          apiConsumerName:
+                            type: string
+                          developerName:
+                            type: string
+                          developerTitle:
+                            type: string
+                          developerEmail:
+                            type: string
+                          developerCompany:
+                            type: string
+                    error:
+                      $ref: "#/paths/~1v1~1api-consumers/post/responses/201/content\
+                        /application~1json/schema/properties/error"
+        "401":
+          description: Authentication information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "404":
+          description: No Consumers were found
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+    delete:
+      tags:
+        - API Consumer
+      summary: Remove API Consumer
+      description: Remove record of Consumer & associated API keys
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "204":
+          description: Consumer deleted.
+        "401":
+          description: Not authenticated. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "404":
+          description: No Consumers were found
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers/post/responses/400/content/appli\
+                  cation~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+  "/v1/api-consumers/{apiConsumerName}":
+    get:
+      tags:
+        - API Consumer
+      summary: Get consumer by Consumer Name
+      description: Get a TMS user's consumer information. This includes the stored metadata
+        about the user, but does not include the Client Secret.
+      parameters:
+        - name: apiConsumerName
+          in: path
+          description: The name of the consumer to retrieve
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          apiClientId:
+                            type: string
+                          apiConsumerName:
+                            type: string
+                          developerName:
+                            type: string
+                          developerTitle:
+                            type: string
+                          developerEmail:
+                            type: string
+                          developerCompany:
+                            type: string
+                    error:
+                      type: object
+                      properties:
+                        code:
+                          type: integer
+                          format: int32
+                        message:
+                          type: string
+                        details:
+                          type: string
+        "401":
+          description: Authentication information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  error:
+                    $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/r\
+                      esponses/200/content/application~1json/schema/items/prope\
+                      rties/error"
+        "404":
+          description: No Consumers were found
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+    put:
+      tags:
+        - API Consumer
+      summary: Update consumer
+      description: Update consumer record. <br>Developer Name, Title, Email, and Company
+        can be updated. <br>The Client ID, Client Secret, and Consumer Name can
+        not be updated.
+      parameters:
+        - name: apiConsumerName
+          in: path
+          description: The name of the consumer to retrieve
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Metadata to be stored along with consumers in MongoDB.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - developerName
+                - developerTitle
+                - developerEmail
+                - developerCompany
+              properties:
+                developerName:
+                  type: string
+                developerTitle:
+                  type: string
+                developerEmail:
+                  type: string
+                developerCompany:
+                  type: string
+        required: true
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/200/content/application~1json/schema/items"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+        "401":
+          description: Authentication information is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+        "404":
+          description: No Consumers with that identifier found
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+        "500":
+          description: Internal server error. Data object array will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-consumers~1%7BapiConsumerName%7D/get/respo\
+                  nses/401/content/application~1json/schema"
+  /v1/api-key:
+    post:
+      tags:
+        - API Key
+      summary: Generate API key
+      description: Create API key for an API consumer. <br>For TMS users, input the
+        supplied ClientID and ClientSecret as Username & Password for basic
+        auth.<br>MyEstes credentials can be used as well. <br>Note when an API
+        key is generated for TMS users, a new ClientSecret will be provided for
+        future requests to retrieve or delete the key.
+      security:
+        - BasicAuth: []
+      responses:
+        "201":
+          description: API key has been generated. Response will contain the API Key.<br>
+            For TMS users response will also contain Client Id, and a new Client
+            Secret for future use.<br> For MyEstes users, response will contain
+            Username for informational purposes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      apiKey:
+                        type: string
+                      apiClientId:
+                        type: string
+                      apiClientSecret:
+                        type: string
+                      myEstesUsername:
+                        type: string
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    items:
+                      type: string
+                  error:
+                    $ref: "#/paths/~1v1~1api-key/post/responses/201/content/applica\
+                      tion~1json/schema/properties/error"
+        "409":
+          description: Conflict. API key is already assigned. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+    get:
+      tags:
+        - API Key
+      summary: Retrieve API key
+      description: Get the API key of API consumer
+      security:
+        - BasicAuth: []
+      responses:
+        "200":
+          description: Return API key.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      apiKey:
+                        type: string
+                      apiClientId:
+                        type: string
+                  error:
+                    $ref: "#/paths/~1v1~1api-key/post/responses/201/content/applica\
+                      tion~1json/schema/properties/error"
+        "400":
+          description: Bad request. API key has not been generated yet. Data object will be
+            empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+    delete:
+      tags:
+        - API Key
+      summary: Invalidate API key
+      description: Delete API key of consumer
+      security:
+        - BasicAuth: []
+      responses:
+        "204":
+          description: API key deleted.
+        "400":
+          description: Bad request. API key has not been generated yet. Data object will be
+            empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1api-key/post/responses/401/content/application\
+                  ~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Unique identifier provided to the client by Estes Express.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token returned by the authentication API for the user.

@@ -3,7 +3,7 @@
   "info": {
     "title": "Estes Express API Suite",
     "description": "APIs provided by Estes Express to partners",
-    "version": "1.11.5"
+    "version": "1.11.6"
   },
   "servers": [
     {
@@ -96,15 +96,17 @@
           "Invoice"
         ],
         "summary": "Freight Invoices",
-        "description": "Returns specific invoice(s) corresponding to the provided reference number. Requires a valid bearer token in the Authorization header of the request.",
+        "description": "Returns specific invoice(s) corresponding to PRO or reference number. <br>Either a PRO or Reference Number (PO or BOL) is required. <br>Requires a valid bearer token in the Authorization header of the request.",
         "parameters": [
           {
             "name": "pro",
             "in": "query",
             "description": "PRO tracking number",
             "schema": {
-              "type": "string",
-              "pattern": "$\\d{10}"
+              "type": "number",
+              "pattern": "$\\d{10}",
+              "maxLength": 10,
+              "minLength": 10
             }
           },
           {

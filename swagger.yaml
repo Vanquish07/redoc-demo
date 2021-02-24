@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Estes Express API Suite
   description: APIs provided by Estes Express to partners
-  version: 1.11.5
+  version: 1.11.6
 servers:
   - url: https://dev-cloudapi.estes-express.com
 paths:
@@ -62,16 +62,19 @@ paths:
       tags:
         - Invoice
       summary: Freight Invoices
-      description: Returns specific invoice(s) corresponding to the provided reference
-        number. Requires a valid bearer token in the Authorization header of the
+      description: Returns specific invoice(s) corresponding to PRO or reference number.
+        <br>Either a PRO or Reference Number (PO or BOL) is required.
+        <br>Requires a valid bearer token in the Authorization header of the
         request.
       parameters:
         - name: pro
           in: query
           description: PRO tracking number
           schema:
-            type: string
+            type: number
             pattern: $\d{10}
+            maxLength: 10
+            minLength: 10
         - name: latest
           in: query
           description: Set to true to get only the most recent version of the invoice when
@@ -3575,3 +3578,4 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Token returned by the authentication API for the user.
+      

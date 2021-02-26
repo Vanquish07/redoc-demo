@@ -5,33 +5,10 @@ info:
   title: Estes Express API Suite
   version: 1.11.6
   description: |
-    ## About 
-
+    # About 
     APIs provided by Estes Express to partners
-
-    ## External Docs 
-
-    External documentation content can be referenced either here or 
-    through the externalDocs OpenAPI tag.    
-
-    ## Swagger vendor extensions used in ReDoc
-
-    ReDoc makes use of the following vendor extensions:
-
-    x-logo - is used to specify API logo
-    x-traitTag - useful for handling out common things like Pagination, Rate-Limits, etc
-    x-codeSamples - specify operation code samples
-    x-examples - specify JSON example for requests
-    x-nullable - mark schema param as a nullable
-    x-displayName - specify human-friendly names for the menu categories
-    x-tagGroups - group tags by categories in the side menu
-    x-servers - ability to specify different servers for API (backported from OpenAPI 3.0)
-    x-ignoredHeaderParameters - ability to specify header parameter names to ignore
-    x-additionalPropertiesName - ability to supply a descriptive name for the additional property keys
-    x-summary - For Response object, use as the response button text, with description rendered under the button
-    x-extendedDiscriminator - In Schemas, uses this to solve name-clash issues with the standard discriminator
-    x-explicitMappingOnly - In Schemas, display a more descriptive property name in objects with additionalProperties when viewing the property list with an object
-
+    # External Docs 
+    External documentation content can be referenced either here or through the externalDocs OpenAPI tag.    
   x-logo:
     url: 'https://www.estes-express.com/application/themes/estes/images/estes-logo-yellow.png'
     altText: Estes Express logo

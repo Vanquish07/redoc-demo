@@ -1,20 +1,10 @@
 openapi: 3.0.1
-servers:
-  - url: https://dev-cloudapi.estes-express.com
 info:
   title: Estes Express API Suite
-  version: 1.11.6
-  description: |
-    # About 
-    APIs provided by Estes Express to partners
-    # External Docs 
-    External documentation content can be referenced either here or through the externalDocs OpenAPI tag.    
-  x-logo:
-    url: 'https://www.estes-express.com/application/themes/estes/images/estes-logo-yellow.png'
-    altText: Estes Express logo
-externalDocs:
-  description: Additional resources can be found here.
-  url: 'httpS://estest-express.com/ourAPIS/'    
+  description: APIs provided by Estes Express to partners
+  version: 1.12.3
+servers:
+  - url: https://dev-cloudapi.estes-express.com
 paths:
   /authenticate:
     post:
@@ -285,6 +275,13 @@ paths:
                           type: string
                         billingTerms:
                           type: string
+                        imageRetrievalResult:
+                          type: string
+                          description: Indicates whether image could be successfully
+                            fetched when requested.
+                          enum:
+                            - SUCCESS
+                            - FAILURE
                         images:
                           type: array
                           items:
@@ -575,287 +572,18 @@ paths:
         "503":
           description: Service unavailable. Response body will be empty.
           content: {}
-  /v1/shipments/status:
-    get:
-      tags:
-        - Shipments
-      summary: Shipment Tracking
-      description: Returns details of shipment status based on PRO or Reference Number.
-        <br> Either a PRO or Reference Number (PO, BOL, LOD, or interline-pro)
-        is required. <br> If not a payer on the shipment, financial charge
-        information will be excluded from the response. <br> If not authorized
-        for the shipment, a redacted payload will be returned. <br> Requires a
-        valid bearer token in the Authorization header of the request.
-      parameters:
-        - name: pro
-          in: query
-          description: PRO-tracking number
-          schema:
-            type: string
-        - name: po
-          in: query
-          description: Purchase Order number
-          schema:
-            type: string
-        - name: bol
-          in: query
-          description: Bill Of Lading number
-          schema:
-            type: string
-        - name: lod
-          in: query
-          description: Load number for shipment tracking
-          schema:
-            type: string
-        - name: interline-pro
-          in: query
-          description: Interline pro for shipment tracking
-          schema:
-            type: string
-        - name: party-to
-          in: query
-          description: For PO, BOL, LOD, or Interline-pro lookups, determines whether to
-            only see results which your account is party to, or all results for
-            the reference number
-          required: false
-          schema:
-            type: boolean
-      security:
-        - ApiKeyAuth: []
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Data object will contain full shipment status for authorized PROs
-            and redacted payloads for unauthorized PROs.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        pro:
-                          type: string
-                        documentReference:
-                          type: array
-                          description: The document reference contains additional BOL & PO
-                            numbers, and other document references
-                          items:
-                            type: object
-                            properties:
-                              ID:
-                                type: string
-                              documentType:
-                                type: string
-                        pickupRequestNumber:
-                          type: string
-                        pickupDate:
-                          type: string
-                        status:
-                          type: object
-                          properties:
-                            conciseStatus:
-                              type: string
-                            expandedStatus:
-                              type: string
-                            referenceDate:
-                              type: string
-                            referenceTime:
-                              type: string
-                            reasonCode:
-                              type: string
-                            reason:
-                              type: string
-                            quantity:
-                              type: string
-                            packageType:
-                              type: string
-                            packageDescription:
-                              type: string
-                        deliveryDate:
-                          type: string
-                        deliveryTime:
-                          type: string
-                        receivedBy:
-                          type: string
-                        estimatedDelivery:
-                          type: object
-                          properties:
-                            startDate:
-                              type: string
-                            startTime:
-                              type: string
-                            endDate:
-                              type: string
-                            endTime:
-                              type: string
-                        driverInfo:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            geoCoordinates:
-                              type: array
-                              items:
-                                type: string
-                            stopsAway:
-                              type: string
-                        appointment:
-                          type: object
-                          properties:
-                            status:
-                              type: string
-                            startDate:
-                              type: string
-                            startTime:
-                              type: string
-                            endDate:
-                              type: string
-                            endTime:
-                              type: string
-                        appointmentHistory:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              status:
-                                type: string
-                              startDate:
-                                type: string
-                              startTime:
-                                type: string
-                              endDate:
-                                type: string
-                              endTime:
-                                type: string
-                              createdDate:
-                                type: string
-                              createdTime:
-                                type: string
-                        piecesCount:
-                          type: string
-                        totalWeight:
-                          type: string
-                        consigneeParty:
-                          type: object
-                          properties:
-                            accountNumber:
-                              type: string
-                            name:
-                              type: string
-                            address:
-                              type: object
-                              properties:
-                                line:
-                                  type: array
-                                  items:
-                                    type: string
-                                city:
-                                  type: string
-                                state:
-                                  type: string
-                                postalCode:
-                                  type: string
-                        shipperParty:
-                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
-                            content/application~1json/schema/properties/data/it\
-                            ems/properties/consigneeParty"
-                        thirdParty:
-                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
-                            content/application~1json/schema/properties/data/it\
-                            ems/properties/consigneeParty"
-                        destinationTerminal:
-                          type: object
-                          properties:
-                            number:
-                              type: string
-                            name:
-                              type: string
-                            address:
-                              $ref: "#/paths/~1v1~1shipments~1status/get/responses/\
-                                200/content/application~1json/schema/properties\
-                                /data/items/properties/consigneeParty/propertie\
-                                s/address"
-                            telephone:
-                              type: string
-                            fax:
-                              type: string
-                            email:
-                              type: string
-                        interlineInfo:
-                          $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/\
-                            content/application~1json/schema/properties/data/it\
-                            ems/properties/consigneeParty"
-                        freightCharges:
-                          type: string
-                        interlinePro:
-                          type: string
-                        disclaimers:
-                          type: array
-                          items:
-                            type: string
-                  error:
-                    type: object
-                    properties:
-                      code:
-                        type: integer
-                        format: int32
-                      message:
-                        type: string
-                      details:
-                        type: string
-        "400":
-          description: Missing or invalid path parameter. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: string
-                  error:
-                    $ref: "#/paths/~1v1~1shipments~1status/get/responses/200/conten\
-                      t/application~1json/schema/properties/error"
-        "403":
-          description: Not authorized. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
-                  plication~1json/schema"
-        "404":
-          description: No shipments found. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
-                  plication~1json/schema"
-        "500":
-          description: Internal server error. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1shipments~1status/get/responses/400/content/ap\
-                  plication~1json/schema"
-        "503":
-          description: Service unavailable. Response body will be empty.
-          content: {}
   /v1/shipments/history:
     get:
       tags:
         - Shipments
       summary: Shipment Tracking History
       description: Returns details of shipment history based on PRO or Reference Number.
-        <br> Either a PRO or Reference Number (PO, BOL, LOD, or interline-pro)
-        is required. <br> If not a payer on the shipment, financial charge
-        information will be excluded from the response. <br> If not authorized
-        for the shipment, a redacted payload will be returned. <br> Requires a
-        valid bearer token in the Authorization header of the request.
+        <br> Either a PRO or Reference Number (PO, BOL, LDN, PUR, or
+        interline-pro) is required. <br> If not a payer on the shipment,
+        financial charge information will be excluded from the response. <br> If
+        not authorized for the shipment, a redacted payload will be returned.
+        <br> Requires a valid bearer token in the Authorization header of the
+        request.
       parameters:
         - name: pro
           in: query
@@ -872,21 +600,26 @@ paths:
           description: Bill Of Lading number
           schema:
             type: string
-        - name: lod
+        - name: pur
           in: query
-          description: Load number for shipment tracking
+          description: Pickup Request number
+          schema:
+            type: string
+        - name: ldn
+          in: query
+          description: Load number
           schema:
             type: string
         - name: interline-pro
           in: query
-          description: Interline pro for shipment tracking
+          description: Interline PRO
           schema:
             type: string
         - name: party-to
           in: query
-          description: For PO, BOL, LOD, or Interline-pro lookups, determines whether to
-            only see results which your account is party to, or all results for
-            the reference number
+          description: For PO, BOL, LDN, PUR, or Interline-pro lookups, determines whether
+            to only see results which your account is party to, or all results
+            for the reference number
           required: false
           schema:
             type: boolean
@@ -1152,39 +885,6 @@ paths:
       description: Create a new pickup request. The request should include an Authorization
         header with a valid bearer token corresponding to the user associated
         with the pickup request.
-      x-codeSamples:
-        - lang: 'C#'
-          source: |
-            **This is from PetStore API**
-            
-            PetStore.v1.Pet pet = new PetStore.v1.Pet();
-            pet.setApiKey("your api key");
-            pet.petType = PetStore.v1.Pet.TYPE_DOG;
-            pet.name = "Rex";
-            // set other fields
-            PetStoreResponse response = pet.create();
-            if (response.statusCode == HttpStatusCode.Created)
-            {
-              // Successfully created
-            }
-            else
-            {
-              // Something wrong -- check response for errors
-              Console.WriteLine(response.getRawResponse());
-            }
-        - lang: PHP
-          source: |
-            **This is from PetStore API**
-
-            $form = new \PetStore\Entities\Pet();
-            $form->setPetType("Dog");
-            $form->setName("Rex");
-            // set other fields
-            try {
-                $pet = $client->pets()->create($form);
-            } catch (UnprocessableEntityException $e) {
-                var_dump($e->getErrors());
-            }          
       requestBody:
         description: Complete details to create a new pickup request.
         content:
@@ -3621,4 +3321,3 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Token returned by the authentication API for the user.
-      

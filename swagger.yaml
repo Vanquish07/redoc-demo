@@ -2,7 +2,7 @@ openapi: 3.0.1
 servers:
   - url: https://dev-cloudapi.estes-express.com
 info:
-  title: Estes Express API Suite
+  title: Estes Express API Suite For Partners
   version: 1.12.3  
   description: 
     $ref: https://vanquish07.github.io/redoc-demo/intro.md

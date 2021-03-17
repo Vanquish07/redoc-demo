@@ -9,7 +9,7 @@ info:
     APIs provided by Estes Express to partners
     # Introduction
     Our APIs are a fast and easy way to integrate our shipping functionality into your business applications and websites. Each API provides access to Estes functionality, allowing you to bypass the traditional HTML forms process and make shipping with Estes a more convenient solution.
-    ## Accessing Our APIs
+    # Accessing Our APIs
     To use our APIs, you will need to generate an API key for the production
     environment and another API key for the test environment. This API key is used for all APIs. These keys are the only ones needed to communicate with our APIs.
     (API keys are not used with Estes legacy web services. To review older web
@@ -17,6 +17,7 @@ info:
     <https://www.estes-express.com/resources/digital-services/api/index>.)
     -   If you are a Transportation Management System (TMS) API customer (these are TMS providers who want to connect to Estes APIs on behalf of multiple  customers need to use a client ID)
     -   If you are an Individual/Direct API customer (these are individual customers who want to connect to Estes APIs directly who use their MyEstes username and password to create an API key)
+
     ## TMS API Customers
     Obtain your API key by providing the following information in an email
     to <WebSupport@estes-express.com>:
@@ -24,26 +25,32 @@ info:
     -   Developer Email
     -   Developer Title
     -   Developer Company
+
     You will receive two emails with a client ID and client secret, one for test
     environment and another for production environment.
-    See the next steps, How to Create and Retrieve Your API Key
+
     ### How To Create Your API Key
     With Postman or a similar API tool, pass your client ID and client secret
     using **Basic Authentication** using the following method:
+
     Production example:
+    
     ```
     curl --request POST 'https://cloudapi.estes-express.com/apikey'   
     --header 'Content-Type: application/json'   
     --header 'Authorization: Basic
     ZThkNmM4Y2MtMDY3ZC00ZmY4LTgxYzMtNWJmNjAxNjUzYjYwOjUyZmRmYzA3LTIxODItNjU0Zi0xNjNmLTVmMGY5YTYyMWQ3Mg=='
     ```
+
     Test example:
+    
     ```
     curl --request POST 'https://uat-cloudapi.estes-express.com/apikey' 
     --header 'Content-Type: application/json' 
     --header 'Authorization: Basic
     ZThkNmM4Y2MtMDY3ZC00ZmY4LTgxYzMtNWJmNjAxNjUzYjYwOjUyZmRmYzA3LTIxODItNjU0Zi0xNjNmLTVmMGY5YTYyMWQ3Mg=='
     ```
+
     In the response, you will receive an API Key, your Client ID and a new Client Secret.
     *Important: This new Client Secret replaces the secret sent in the previous
     e-mail.*

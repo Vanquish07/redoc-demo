@@ -351,6 +351,12 @@ paths:
         "503":
           description: Service unavailable. Response body will be empty.
           content: {}
+      x-code-samples:
+        - lang: 'CURL'
+          source: |
+            curl --location --request GET 'https://cloudapi.estes-express.com/v1/invoices?pro=000000000' \
+            --header 'apikey: apikey-here' \
+            --header 'Authorization: Bearer your-token-here'
   /v1/shipments:
     get:
       tags:

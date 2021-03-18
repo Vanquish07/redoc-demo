@@ -2004,7 +2004,7 @@ RESPONSE SCHEMA:
 ```
 
 
-## Geo Location 
+# Geo Location 
 
 Geo Location (GPS) data represents the physical location of freight at key points while in transit. The timing and availability of geo location information is dependent on the stage of the transit lifecycle. For example, there are more triggering events when freight is Out for Delivery than when moving through the Line Haul network. Data is collected through Driver Hand Held (HH) devices and the Line Haul Central Dispatch network. Be aware that GPS data may not be available during transit depending on certain conditions.
 
@@ -2036,7 +2036,7 @@ The following example is presented in this JSON fragment returned from Shipment 
 `        "41.547504"`
 `    ],`
 
-## Push Services (Subscriptions)
+# Push Services (Subscriptions)
 
 Definitions coming soon.
 

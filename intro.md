@@ -178,6 +178,43 @@ curl -X GET
 "accept: application/json" -H "A
 ```
 
+# Geo Location 
+
+Geo Location (GPS) data represents the physical location of freight at key points while in transit. The timing and availability of geo location information is dependent on the stage of the transit lifecycle. For example, there are more triggering events when freight is Out for Delivery than when moving through the Line Haul network. Data is collected through Driver Hand Held (HH) devices and the Line Haul Central Dispatch network. Be aware that GPS data may not be available during transit depending on certain conditions.
+
+The following table indicates the availability of geo location data returned by the Tracking API:
+
+| Freight Movement (Location) | Geo Location Data Availability | 
+| --------------------------- | ------------------------------ |
+| Origin Terminal | Yes (Departure only*) No freight at this point.|
+| Stops Away From Pickup | Yes (Departure only*) No freight at this point.|
+| Pick Up | Yes (Departure only*) |
+| Return to Origin Terminal | Yes (Departure only*) |
+| Hub(s) | Yes |
+| Line Haul Meet Point** | Yes |
+| Destination Terminal | Yes |
+| Stops away from delivery | Yes (Departure only*)|
+| Delivery Location | Yes (Departure only*)|
+| | |
+
+\* "Departure only" indicates data is collected when the Estes vehicle has departed the location.
+
+\** Certain Line Haul Meet Point locations may not be on the Central Dispatch network and may not have GPS data. 
+
+Geo Location data is presented in **longitude, latitude** order. 
+
+The following example is presented in this JSON fragment returned from Shipment Tracking and Pickup APIs. 
+
+`    "geoCoordinates": [`
+`        "-72.900644",`
+`        "41.547504"`
+`    ],`
+
+# Push Services (Subscriptions)
+
+Definitions coming soon.
+
+
 # Data Definitions
 
 Definitions for data fields passed through APIs are listed here by their API object.
@@ -2002,40 +2039,3 @@ RESPONSE SCHEMA:
     }
 }
 ```
-
-# Geo Location 
-
-Geo Location (GPS) data represents the physical location of freight at key points while in transit. The timing and availability of geo location information is dependent on the stage of the transit lifecycle. For example, there are more triggering events when freight is Out for Delivery than when moving through the Line Haul network. Data is collected through Driver Hand Held (HH) devices and the Line Haul Central Dispatch network. Be aware that GPS data may not be available during transit depending on certain conditions.
-
-The following table indicates the availability of geo location data returned by the Tracking API:
-
-| Freight Movement (Location) | Geo Location Data Availability | 
-| --------------------------- | ------------------------------ |
-| Origin Terminal | Yes (Departure only*) No freight at this point.|
-| Stops Away From Pickup | Yes (Departure only*) No freight at this point.|
-| Pick Up | Yes (Departure only*) |
-| Return to Origin Terminal | Yes (Departure only*) |
-| Hub(s) | Yes |
-| Line Haul Meet Point** | Yes |
-| Destination Terminal | Yes |
-| Stops away from delivery | Yes (Departure only*)|
-| Delivery Location | Yes (Departure only*)|
-| | |
-
-\* "Departure only" indicates data is collected when the Estes vehicle has departed the location.
-
-\** Certain Line Haul Meet Point locations may not be on the Central Dispatch network and may not have GPS data. 
-
-Geo Location data is presented in **longitude, latitude** order. 
-
-The following example is presented in this JSON fragment returned from Shipment Tracking and Pickup APIs. 
-
-`    "geoCoordinates": [`
-`        "-72.900644",`
-`        "41.547504"`
-`    ],`
-
-# Push Services (Subscriptions)
-
-Definitions coming soon.
-

@@ -5,7 +5,7 @@ info:
   title: Estes Express API Suite For Partners
   version: 1.12.3  
   description: 
-    $ref: https://vanquish07.github.io/redoc-demo/intro.md
+    $ref: https://vanquish07.github.io/redoc-demo/intro.md 
   x-logo:
     url: 'https://www.estes-express.com/application/themes/estes/images/estes-logo-yellow.png'
     altText: Estes Express logo  

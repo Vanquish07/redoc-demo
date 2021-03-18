@@ -11,7 +11,7 @@ info:
     altText: Estes Express logo  
 externalDocs:
   description: Additional resources can be found here.
-  url: 'https://vanquish07.github.io/redoc-demo/estes-documentation.md'    
+  url: 'https://vanquish07.github.io/redoc-demo/estes-docs.html'    
 paths:
   /authenticate:
     post:

@@ -1,0 +1,3723 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+<h1 id="estes-api-documentation-reference">Estes API Documentation Reference</h1>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="##datadefinitions">Data Definitions</a></li>
+<li><a href="##apiexamples">API Examples</a></li>
+<li><a href="##geolocation">Geo Location</a></li>
+<li><a href="##push">Push Services (Subscriptions)</a></li>
+<h2 id="data-definitions">Data Definitions</h2>
+<p><a name="datadefinitions"></a></p>
+</li>
+</ul>
+<p>Definitions for data fields passed through APIs are listed here by their API object.</p>
+<p>Some data fields are classes – they contain other fields within their JSON objects. </p>
+<p>Additional fields within classes are followed by the row <em>contains</em>.</p>
+<h3 id="pickup-request">Pickup Request</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>requestNumber</td>
+<td>A reference number given to the customer by the time-critical team when they request a time-critical shipment. It’s the number used to identify the request in the system throughout the shipping process.</td>
+<td></td>
+</tr>
+<tr>
+<td>pro</td>
+<td>PRO Number is a pre-assigned, 10-digit freight bill number given to each shipment to serve as a tracking number. PRO is an acronym for Progressive Rotating Order.</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>A class to describe the condition or position of an object.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>description</td>
+<td>Text describing this status.</td>
+</tr>
+<tr>
+<td></td>
+<td>reason</td>
+<td>The reason for this status condition or position, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>reasonCode</td>
+<td>The reason for this status condition or position, expressed as a code.</td>
+</tr>
+<tr>
+<td>shipper</td>
+<td>This is the address of the pickup location. Although it’s optional, either it or the accountCode must be indicated. If an accountCode is provided, the shipper address (pickup location) is pulled from the Estes account master by the account code. If an address is provided in addition to the account code, the address associated with the account code will override the information provided in the shipperAddress element. NOTE: Shipper contains several classes including name, address and contacts.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>name</td>
+<td>The name of this branch or division of an organization.</td>
+</tr>
+<tr>
+<td></td>
+<td>accountCode</td>
+<td></td>
+</tr>
+<tr>
+<td>address</td>
+<td>A class to define common information related to an address.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>line</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>A territorial division of a country, such as a county or state, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td></td>
+<td>country</td>
+<td>The country in which this address is situated.</td>
+</tr>
+<tr>
+<td>contacts</td>
+<td>A class that contains contact information</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>type</td>
+<td>The type of this contract, expressed as text, such as “Cost plus award fee” and “Cost plus fixed fee” from UNCEFACT Contract Type code list.</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this contact. It is recommended that this be used for a functional name and not a personal name.</td>
+</tr>
+<tr>
+<td></td>
+<td>email</td>
+<td>The primary email address of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>phone</td>
+<td>The primary telephone number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>fax</td>
+<td>The primary fax number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>receiveNotifications</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td></td>
+<td>notificationMethod</td>
+<td>This code indicates the method of notification if the receiveNotifications element is enabled for the contact (Y). Valid values are listed below:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• E — Email</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• F — Fax (NOTE Fax-based notifications are unavailable at this time.)</td>
+</tr>
+<tr>
+<td>requestAction</td>
+<td>This is the pickup action to perform. If the request is for Estes to pick up a full trailer, choose HE (to indicate empty) or HL (to indicate loaded). If you need Estes to drop off an empty trailer, choose SE. If the request is for a pickup of freight from your dock that is not a trailer-load, then pass LL (or don’t pass this element, and it will default to LL). If Estes must call to set up an appointment before arriving, then pass AP. Valid values are listed below:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• AP — Appointment required</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• HE — LTL hook empty</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• HL — LTL hook loaded</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• LL — LTL live load [default]</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• SE — LTL spot/drop empty</td>
+<td></td>
+</tr>
+<tr>
+<td>paymentTerms</td>
+<td>These are the requested payment terms to apply to any resulting shipments picked up. Valid values include:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• COL — Collect</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• PPD — Prepaid</td>
+<td></td>
+</tr>
+<tr>
+<td>totalPieces</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>totalWeight</td>
+<td>The total declared weight of the goods in this consignment, including packaging but excluding the carrier’s equipment.</td>
+<td></td>
+</tr>
+<tr>
+<td>totalHandlingUnits</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hazmatFlag</td>
+<td>Use this to indicate the requirement to pick up hazardous materials. Cite additional details and specify the identity and type of hazardous materials in the request’s commodity elements area.</td>
+<td></td>
+</tr>
+<tr>
+<td>expeditedCode</td>
+<td>This is an optional code indicating the priority of the resulting shipment after successful pickup. Valid values are listed below:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• (BLANK) — normal [default]</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• E — Estes Forwarding</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• G — Guaranteed</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• H — Hot</td>
+<td></td>
+</tr>
+<tr>
+<td>whoRequested</td>
+<td>This optional code indicates the party that requested the pickup. The following are the valid values:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• (BLANK) — Unknown</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• C — Consignee</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• S — Shipper</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 3 — 3rd party</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 4 — 4th party</td>
+<td></td>
+</tr>
+<tr>
+<td>userName</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>userAccount</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>pickupDate</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>pickupStartTime</td>
+<td>This is a 4-digit time with a 2-digit hour and 2-digit minute that indicates the start of the time-window when the client expects Estes to execute the pickup.</td>
+<td></td>
+</tr>
+<tr>
+<td>pickupEndTime</td>
+<td>This is a 4-digit time with a 2-digit hour and 2-digit minute that indicates the end of the time-window when the client expects Estes to execute the pickup.</td>
+<td></td>
+</tr>
+<tr>
+<td>appointmentHistory</td>
+<td>class</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>startDate</td>
+<td>The date on which this period begins.</td>
+</tr>
+<tr>
+<td></td>
+<td>startTime</td>
+<td>The time at which this period begins.</td>
+</tr>
+<tr>
+<td></td>
+<td>endDate</td>
+<td>The date on which this period ends.</td>
+</tr>
+<tr>
+<td></td>
+<td>endTime</td>
+<td>The time at which this period ends.</td>
+</tr>
+<tr>
+<td></td>
+<td>createdDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>createdTime</td>
+<td></td>
+</tr>
+<tr>
+<td>transportEvent</td>
+<td>An event associated with this Transportation Status report.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>driver</td>
+<td>Describes a person responsible for driving the transport means.</td>
+</tr>
+<tr>
+<td></td>
+<td>driverCoordinates</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>estimatedPickupDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>estimatedPickupTime</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>stopsAway</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lastUpdatedDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lastUpdatedTime</td>
+<td></td>
+</tr>
+<tr>
+<td>trailers</td>
+<td>The part of the rig used to haul goods. A trailer is hooked to an engine-powered tractor.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>length</td>
+<td>Use this optional code if the request directs Estes to hook or drop off a trailer at the pickup location. The following are the valid values:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• (BLANK) — Trailer length not specified</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 20 — 20 feet</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 28 — 28 feet</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 40 — 40 feet</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 45 — 45 feet</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 48 — 48 feet</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 53 — 53 feet</td>
+</tr>
+<tr>
+<td></td>
+<td>type</td>
+<td>This optional code indicates the trailer type if the request requires Estes to hook up or drop off a trailer at the pickup location. The following are the valid values:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• (BLANK) — Trailer type not specified</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CT — Straight Container</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• LG — Lift Gate</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RD — Roll Door</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• SD — Side Door</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• ST — Swing Door Truck</td>
+</tr>
+<tr>
+<td>referenceNumbers</td>
+<td>Used in each referenceNumber element of the optional unbounded referenceNumbers element, this code defines the type of reference number passed in that element. Below are the valid values:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• BOL — Bill of Lading number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• DPT — Consignee department number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• NUM — Shipper ID number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• PKG — Shipper package ID number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• PON — Consignee purchase order number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• RAU — Return authority</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>PRO – ask Bala about new codes</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>SID</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>EUI</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>LDN</td>
+<td></td>
+</tr>
+<tr>
+<td>commodities</td>
+<td>class</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>code</td>
+<td>Used in each commodity element of the optional unbounded commodities element, this unique commodity code defines the type of commodity being passed. It supports custom commodity code values or you may leave it blank (an empty string) and it will default to “MISC” (without quotes). If you are unsure what to pass, use MISC.</td>
+</tr>
+<tr>
+<td></td>
+<td>packageCode</td>
+<td>Used in each commodity element of the optional unbounded commodities element, this is a unit of measure for the commodity. Valid values are listed below :</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BD — Bundles</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BG — Bags</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BK — Buckets</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BL — Bales</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BR — Barrels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BX — Boxes</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CN — Cans</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CR — Crates</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CS — Cases</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CT — Cartons</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• CY — Cylinders</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• DR — Drums</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• JC — Jerrican</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• KT — Kits</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PC — Pieces</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PK — Packages</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PL — Pails</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PT — Pallets</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RE — Reels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RL — Rolls</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• SK — Skids</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• TL — Truckload</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• TO — Totes</td>
+</tr>
+<tr>
+<td>description</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hazmat</td>
+<td><em>Hazardous Materials:</em> The Transportation Safety Act of 1974 defines hazardous material as “a substance or material in quantity and form which may pose an unreasonable risk to health and safety or property when transported in commerce.” Consists of hazmarCode and hazmatFlag.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>hazmatCode</td>
+<td>The hazmat element is optional. If the commodity is not hazardous, omit this element from the commodity being passed to prevent validations from requiring its child elements. Used in each commodity element of the optional unbounded commodities element, this is required if the adjacent hazmat flag has a value. It must start with one of the two values listed here to be a valid industry standard hazardous material code.</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• NA</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• UN</td>
+</tr>
+<tr>
+<td></td>
+<td>hazmatFlag</td>
+<td>Used in each commodity element of the optional unbounded commodities element, the hazmat code here represents the type of hazmat commodity. Valid values are listed below:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• (BLANK)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• C — Corrosive</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• D — Dangerous</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• E — Explosives</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• F — Flammable</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• G — Flammable gas</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• H — Hazardous</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• L — Chlorine</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• M — Combustible</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• N — Nonflammable gas</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• P — Poison</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• R — Radioactive</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• S — Flammable solid</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• X — Oxidizer</td>
+</tr>
+<tr>
+<td>pieces</td>
+<td>The number of pieces of transport handling equipment (pallets, boxes, cases, etc.) in this consignment.</td>
+<td></td>
+</tr>
+<tr>
+<td>weight</td>
+<td>The total declared weight of the goods in this consignment, including packaging but excluding the carrier’s equipment.</td>
+<td></td>
+</tr>
+<tr>
+<td>nmfcNumber</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>nmfcSubNumber</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>comments</td>
+<td>Used in each comment element of the optional unbounded comments element, the type code here indicates the type of comment. Valid values are listed below:</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• CCM — Consignee Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• CSI — Consignee Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• SCM — Shipper/Stop Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• SSI — Shipper/Stop Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 3CM — 3rd Party Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 3SI — 3rd Party Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 4CM — 4th Party Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 4SI — 4th Party Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 5CM — 5th Party Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 5SI — 5th Party Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 6CM — 6th Party Comment</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 6SI — 6th Party Special Instruction</td>
+<td></td>
+</tr>
+<tr>
+<td>addresses</td>
+<td>A class to define common information related to an address.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>type</td>
+<td>Used in each address element of the optional unbounded addresses element, the type code here indicates the type of address being passed. Valid values are listed below:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• C — Consignee Address</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 3 — 3rd Party Address</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 4 — 4th Party Address</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 5 — 5th Party Address</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• 6 — 6th Party Address</td>
+</tr>
+<tr>
+<td></td>
+<td>line</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>A territorial division of a country, such as a county or state, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td></td>
+<td>country</td>
+<td>The country in which this address is situated.</td>
+</tr>
+<tr>
+<td>contacts</td>
+<td>Used in each contact element of the optional unbounded contacts element, the type code here indicates the type of contact being passed. Valid values are listed below:</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>• A — Actual Submitter</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• C — Consignee Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• R — Requested Response Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• S — Shipper Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 3 — Third Party Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 4 — Fourth Party Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 5 — Fifth Party Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• 6 — Sixth Party Contact</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this contact. It is recommended that this be used for a functional name and not a personal name.</td>
+</tr>
+<tr>
+<td></td>
+<td>email</td>
+<td>The primary email address of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>phone</td>
+<td>The primary telephone number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>fax</td>
+<td>The primary fax number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>receiveNotifications</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td></td>
+<td>notificationMethod</td>
+<td>This code indicates the method of notification if the receiveNotifications element is enabled for the contact (Y). Valid values are listed below:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• E — Email</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• F — Fax (NOTE Fax-based notifications are unavailable at this time.)</td>
+</tr>
+<tr>
+<td>notifications</td>
+<td>You can subscribe to automatic notification emails, which are sent at key events throughout the pickup lifecycle. This code indicates the type of event to subscribe to for automatic notifications. (Valid values are listed below.) It’s also possible to pass multiple notification elements with a different type on each to receive notifications when more than one of the following events occur. The notifications will be sent to all contacts passed with the receiveNotifications element set to Y via a valid associated email address.</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• ACC — Terminal accepted pickup</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• BGN — Work has begun</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• RCV — Pickup request received</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• RJT — Pickup request rejected</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>• WRK — Pickup request worked (Estes has the freight.)</td>
+<td></td>
+</tr>
+<tr>
+<td>originTerminal</td>
+<td>The terminal at which freight is received from the shipper.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td>A class to define common information related to an address.</td>
+</tr>
+<tr>
+<td></td>
+<td><em>contains</em></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>line</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>A territorial division of a country, such as a county or state, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td></td>
+<td>country</td>
+<td>The country in which this address is situated.</td>
+</tr>
+<tr>
+<td></td>
+<td>telephone</td>
+<td>The primary telephone number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>fax</td>
+<td>The primary fax number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>email</td>
+<td>The primary email address of this contact.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="shipment-history">Shipment History</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pro</td>
+<td>PRO-tracking number</td>
+<td></td>
+</tr>
+<tr>
+<td>documentReference</td>
+<td>The document reference contains additional BOL &amp; PO numbers, and other document references. References are data type strings. Example: “BOL”</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>ID</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>documentType</td>
+<td>Document type code</td>
+</tr>
+<tr>
+<td>pickupRequestNumber</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>pickupDate</td>
+<td>object - The actual pickup date.</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>A class to describe the condition or position of an object.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>conciseStatus</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>expandedStatus</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>referenceDate</td>
+<td>The reference date for this status.</td>
+</tr>
+<tr>
+<td></td>
+<td>referenceTime</td>
+<td>The reference time for this status.</td>
+</tr>
+<tr>
+<td></td>
+<td>reasonCode</td>
+<td>The reason for this status condition or position, expressed as a code.</td>
+</tr>
+<tr>
+<td></td>
+<td>reason</td>
+<td>The reason for this status condition or position, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>quantity</td>
+<td>The total number of goods items in this shipment.</td>
+</tr>
+<tr>
+<td></td>
+<td>packageType</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>packageDescription</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>receivedBy</td>
+<td></td>
+</tr>
+<tr>
+<td>estimatedDelivery</td>
+<td>Object - The period estimated for delivery.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>startDate</td>
+<td>The date on which this period begins.</td>
+</tr>
+<tr>
+<td></td>
+<td>startTime</td>
+<td>The time at which this period begins.</td>
+</tr>
+<tr>
+<td></td>
+<td>endDate</td>
+<td>The date on which this period ends.</td>
+</tr>
+<tr>
+<td></td>
+<td>endTime</td>
+<td>The time at which this period ends.</td>
+</tr>
+<tr>
+<td>driverInfo</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>name</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>geoCoordinates</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>stopsAway</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>driverName</td>
+<td></td>
+</tr>
+<tr>
+<td>appointment</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>status</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>startDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>startTime</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>endDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>endTime</td>
+<td></td>
+</tr>
+<tr>
+<td>appointmentHistory</td>
+<td>Object</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>status</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>createdDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>createdTime</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>startDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>startTime</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>endDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>endTime</td>
+<td></td>
+</tr>
+<tr>
+<td>piecesCount</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>totalWeight</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>consigneeParty</td>
+<td>Object - The designated recipient (customer) of a shipment as indicated on the <a href="https://www.estes-express.com/resources/transportation-glossary ##bol">Bill of Lading</a>.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>accountNumber</td>
+<td>Used in each referenceNumber element of the optional unbounded referenceNumbers element, this code defines the type of reference number passed in that element. Below are the valid values:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BOL — Bill of Lading number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• DPT — Consignee department number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• NUM — Shipper ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PKG — Shipper package ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PON — Consignee purchase order number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RAU — Return authority</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this branch or division of an organization.</td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td>class</td>
+</tr>
+<tr>
+<td></td>
+<td>line (items)</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>the state abbreviation</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td>shipperParty</td>
+<td>Object - The designated shipper as indicated on the <a href="https://www.estes-express.com/resources/transportation-glossary ##bol">Bill of Lading</a>.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>accountNumber</td>
+<td>Used in each referenceNumber element of the optional unbounded referenceNumbers element, this code defines the type of reference number passed in that element. Below are the valid values:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BOL — Bill of Lading number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• DPT — Consignee department number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• NUM — Shipper ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PKG — Shipper package ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PON — Consignee purchase order number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RAU — Return authority</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this branch or division of an organization.</td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td>class</td>
+</tr>
+<tr>
+<td></td>
+<td>line (items)</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>the state abbreviation</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td>thirdParty</td>
+<td>Object - The designated third party of a shipment as indicated on the <a href="https://www.estes-express.com/resources/transportation-glossary ##bol">Bill of Lading</a>.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>accountNumber</td>
+<td>Used in each referenceNumber element of the optional unbounded referenceNumbers element, this code defines the type of reference number passed in that element. Below are the valid values:</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• BOL — Bill of Lading number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• DPT — Consignee department number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• NUM — Shipper ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PKG — Shipper package ID number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• PON — Consignee purchase order number</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>• RAU — Return authority</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this branch or division of an organization.</td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td>class</td>
+</tr>
+<tr>
+<td></td>
+<td>line (items)</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>the state abbreviation</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td>destinationTerminal</td>
+<td>Object - The terminal that will deliver the shipment within the geographical area that the terminal serves.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains:</em></td>
+<td>number</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>The name of this branch or division of an organization.</td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td>references consigneeParty/address - A class to define common information related to an address.</td>
+</tr>
+<tr>
+<td></td>
+<td>telephone</td>
+<td>The primary telephone number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>fax</td>
+<td>The primary fax number of this contact.</td>
+</tr>
+<tr>
+<td></td>
+<td>email</td>
+<td>The primary email address of this contact.</td>
+</tr>
+<tr>
+<td>interlineInfo</td>
+<td>references consigneeParty</td>
+<td></td>
+</tr>
+<tr>
+<td>freightCharges</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>interlinePro</td>
+<td>Interline pro for shipment tracking</td>
+<td></td>
+</tr>
+<tr>
+<td>disclaimers</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>movementHistory</td>
+<td>Object (this section includes current history and the running history of the movement of freight)</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>description</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>location</td>
+<td><em>contains</em></td>
+</tr>
+<tr>
+<td></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>code</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>address</td>
+<td><em>contains</em></td>
+</tr>
+<tr>
+<td></td>
+<td>line</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>geoCoordinates</td>
+<td>(See chapter on Geo Location)</td>
+</tr>
+<tr>
+<td></td>
+<td>contact</td>
+<td><em>contains</em></td>
+</tr>
+<tr>
+<td></td>
+<td>telephone</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>fax</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>transportEventTypeCode</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>statusHistory</td>
+<td><em>contains</em></td>
+</tr>
+<tr>
+<td></td>
+<td>conciseStatus</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>expandedStatus</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>referenceDate</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>referenceTime</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>reasonCode</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>reason</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>quantity</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>packageType</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>packageDescription</td>
+</tr>
+</tbody>
+</table>
+<h3 id="invoice">Invoice</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>invoiceID</td>
+<td>An identifier for this document, assigned by the sender.</td>
+<td></td>
+</tr>
+<tr>
+<td>trailerNumber</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>issueDate</td>
+<td>The date, assigned by the sender, on which this document was issued.</td>
+<td></td>
+</tr>
+<tr>
+<td>note</td>
+<td>Free-form text pertinent to this document, conveying information that is not contained explicitly in other structures.</td>
+<td></td>
+</tr>
+<tr>
+<td>pro</td>
+<td>PRO Number: A pre-assigned, 10-digit freight bill number given to each shipment to serve as a tracking number. PRO is an acronym for Progressive Rotating Order.</td>
+<td></td>
+</tr>
+<tr>
+<td>dueDate</td>
+<td>The date on which Invoice is due.</td>
+<td></td>
+</tr>
+<tr>
+<td>consignorAssignedID</td>
+<td>An identifier for this consignment, assigned by the consignor.</td>
+<td></td>
+</tr>
+<tr>
+<td>consigneeParty</td>
+<td>Object - A party to which goods are consigned.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>partyIdentification</td>
+<td>An identifier for this party.</td>
+</tr>
+<tr>
+<td></td>
+<td>partyName</td>
+<td>A name for this party.</td>
+</tr>
+<tr>
+<td></td>
+<td>addressLine</td>
+<td>An unstructured address line.</td>
+</tr>
+<tr>
+<td></td>
+<td>city</td>
+<td>The name of a city, town, or village.</td>
+</tr>
+<tr>
+<td></td>
+<td>postalCode</td>
+<td>The postal identifier for this address according to the relevant national postal service, such as a ZIP code or Post Code.</td>
+</tr>
+<tr>
+<td></td>
+<td>state</td>
+<td>A territorial division of a country, such as a county or state, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>telephone</td>
+<td>The primary telephone number of this contact.</td>
+</tr>
+<tr>
+<td>shipperParty</td>
+<td>references consigneeParty</td>
+<td></td>
+</tr>
+<tr>
+<td>po</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>bol</td>
+<td>Bill of Lading - A legal document signed by the shipper and carrier tendering the responsibility of the freight to the carrier. The BOL states pertinent information for the shipment such as the complete address of the shipper and consignee, number of pieces, description, weight, and any hazardous material information.</td>
+<td></td>
+</tr>
+<tr>
+<td>additionalDocumentReference</td>
+<td>The additional document reference contains additional BOL &amp; PO numbers, and other document references</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>documentType</td>
+<td>The type of document being referenced, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>documentTypeCode</td>
+<td>example (BOL)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>accountingSupplierParty</td>
+<td>references consigneeParty</td>
+<td></td>
+</tr>
+<tr>
+<td>accountingCustomerParty</td>
+<td>references consigneeParty</td>
+<td></td>
+</tr>
+<tr>
+<td>allowanceCharge</td>
+<td>object - An allowance or charge covered by these delivery terms.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>discountFunction</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>totalDiscount</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>totalDiscountPercentage</td>
+<td></td>
+</tr>
+<tr>
+<td>payableAmount</td>
+<td>The amount of the monetary total to be paid.</td>
+<td></td>
+</tr>
+<tr>
+<td>chargeTotalAmount</td>
+<td>The total monetary amount of all charges.</td>
+<td></td>
+</tr>
+<tr>
+<td>amountPaid</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>invoiceLine</td>
+<td>object - A line describing an invoice item.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>note</td>
+<td>Free-form text pertinent to this document, conveying information that is not contained explicitly in other structures.</td>
+</tr>
+<tr>
+<td></td>
+<td>quantity</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lineExtensionAmount</td>
+<td>The total amount for this invoice line, including allowance charges but net of taxes.</td>
+</tr>
+<tr>
+<td></td>
+<td>itemDescription</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>hazardousCategoryCode</td>
+<td>A code signifying a kind of hazard for a material.</td>
+</tr>
+<tr>
+<td></td>
+<td>weight</td>
+<td></td>
+</tr>
+<tr>
+<td>documentReference</td>
+<td>A reference to a document associated with this invoice line.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>documentType</td>
+<td>The type of document being referenced, expressed as text.</td>
+</tr>
+<tr>
+<td></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>documentTypeCode</td>
+<td>The type of document being referenced, expressed as a code.</td>
+</tr>
+<tr>
+<td>commodityCode</td>
+<td>The harmonized international commodity code for cross border and regulatory (customs and trade statistics) purposes.</td>
+<td></td>
+</tr>
+<tr>
+<td>firstArrivalPortLocation</td>
+<td>object - The first arrival location in a transport. This would be a port for sea, an airport for air, a terminal for rail, or a border post for land crossing.</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains:</em></td>
+<td>id</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>description</td>
+<td>Text describing the attribute that applies to the condition.</td>
+</tr>
+<tr>
+<td>lastExitPortLocation</td>
+<td>references firstArrivalPortLocation</td>
+<td></td>
+</tr>
+<tr>
+<td>grossWeightMeasure</td>
+<td>The entire weight of a shipment including containers and packaging materials.</td>
+<td></td>
+</tr>
+<tr>
+<td>invoiceType</td>
+<td>A code signifying the type of the Invoice.</td>
+<td></td>
+</tr>
+<tr>
+<td>scacCode</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>pickupDate</td>
+<td>The actual pickup date.</td>
+<td></td>
+</tr>
+<tr>
+<td>deliveryDate</td>
+<td>The actual date of delivery.</td>
+<td></td>
+</tr>
+<tr>
+<td>billingTerms</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>imageRetrievalResult</td>
+<td>A string which indicates an image is available for the retrieved invoice. If “SUCCESS”, there will be data in the images object.</td>
+<td></td>
+</tr>
+<tr>
+<td>images</td>
+<td>object</td>
+<td></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td>url</td>
+<td>The url locater for the image.</td>
+</tr>
+<tr>
+<td></td>
+<td>documentType</td>
+<td>The document type.</td>
+</tr>
+<tr>
+<td></td>
+<td>data</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>contentType</td>
+<td>The content type.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-examples">API Examples</h2>
+<p><a name="apiexamples"></a></p>
+<p>The examples listed here consist of a CURL (https request) statement with necessary parameters or request body followed by a response in JSON format.</p>
+<p>Examples are for illustrative purposes only. You need a valid API key and bearer authentication token. See <em>Accessing Our Apis</em> for more information.</p>
+<h3 id="you-want-to-pull-an-invoice">You want to pull an invoice</h3>
+<p>Returns specific invoice(s) corresponding to the provided PRO tracking, PO (purchase order) or BOL (bill of lading) number. </p>
+<h3 id="-available-parameters">## Available Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Passed</th>
+<th>Type</th>
+<th>Max</th>
+<th>Min</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pro</td>
+<td>query</td>
+<td>number</td>
+<td>9999999999</td>
+<td>0</td>
+<td>N/A</td>
+<td>PRO tracking number</td>
+</tr>
+<tr>
+<td>latest</td>
+<td>query</td>
+<td>boolean</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>Set to true to get only the most recent version of the invoice when looking up by PRO number.</td>
+</tr>
+<tr>
+<td>po</td>
+<td>query</td>
+<td>string</td>
+<td>15</td>
+<td>1</td>
+<td>N/A</td>
+<td>Purchase order number</td>
+</tr>
+<tr>
+<td>bol</td>
+<td>query</td>
+<td>string</td>
+<td>25</td>
+<td>1</td>
+<td>N/A</td>
+<td>Bill of lading number</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-json">CURL:
+
+curl --location --request GET <span class="hljs-string">'https://cloudapi.estes-express.com/v1/invoices?pro=000000000'</span> \
+--header <span class="hljs-string">'apikey: apikey-here'</span> \
+--header <span class="hljs-string">'Authorization: Bearer your-token-here'</span>
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: [
+        {
+            <span class="hljs-string">"invoiceID"</span>: <span class="hljs-string">"2238130"</span>,
+            <span class="hljs-string">"issueDate"</span>: <span class="hljs-string">"2019-08-21"</span>,
+            <span class="hljs-string">"pro"</span>: <span class="hljs-string">"0031928990"</span>,
+            <span class="hljs-string">"dueDate"</span>: <span class="hljs-string">"2019-09-20"</span>,
+            <span class="hljs-string">"consignorAssignedID"</span>: <span class="hljs-string">"8007388848"</span>,
+            <span class="hljs-string">"consigneeParty"</span>: {
+                <span class="hljs-string">"partyIdentification"</span>: [
+                    <span class="hljs-string">"B001310"</span>
+                ],
+                <span class="hljs-string">"partyName"</span>: <span class="hljs-string">"NONSTOP DELIVERY"</span>,
+                <span class="hljs-string">"serviceProvider"</span>: {},
+                <span class="hljs-string">"addressLine"</span>: [
+                    <span class="hljs-string">"333 STRAWBERRY FIELDS ROAD, UN"</span>,
+                    <span class="hljs-string">"UNIT 9"</span>
+                ],
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"SEEKONK"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"02886"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"RI"</span>
+            },
+            <span class="hljs-string">"shipperParty"</span>: {
+                <span class="hljs-string">"partyIdentification"</span>: [
+                    <span class="hljs-string">"0304497"</span>
+                ],
+                <span class="hljs-string">"partyName"</span>: <span class="hljs-string">"ARMSTRONG FLOORING INC"</span>,
+                <span class="hljs-string">"serviceProvider"</span>: {},
+                <span class="hljs-string">"addressLine"</span>: [
+                    <span class="hljs-string">"1720 SOUTH MILITARY HIGHWAY"</span>,
+                    <span class="hljs-string">""</span>
+                ],
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"CHESAPEAKE"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"23320"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>
+            },
+            <span class="hljs-string">"accountingSupplierParty"</span>: {
+                <span class="hljs-string">"partyIdentification"</span>: [
+                    <span class="hljs-string">""</span>
+                ],
+                <span class="hljs-string">"partyName"</span>: <span class="hljs-string">"Estes"</span>,
+                <span class="hljs-string">"serviceProvider"</span>: {},
+                <span class="hljs-string">"addressLine"</span>: [
+                    <span class="hljs-string">"PO Box 25612"</span>
+                ],
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"Richmond"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"23260-5612"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"VA"</span>,
+                <span class="hljs-string">"telephone"</span>: <span class="hljs-string">"804.353.1900"</span>
+            },
+            <span class="hljs-string">"accountingCustomerParty"</span>: {
+                <span class="hljs-string">"partyIdentification"</span>: [
+                    <span class="hljs-string">"5067376"</span>
+                ],
+                <span class="hljs-string">"partyName"</span>: <span class="hljs-string">"ARMSTRONG FLOORING SAP/EDI"</span>,
+                <span class="hljs-string">"serviceProvider"</span>: {},
+                <span class="hljs-string">"addressLine"</span>: [
+                    <span class="hljs-string">"FLOOR PRODUCTS"</span>,
+                    <span class="hljs-string">"PO BOX 3237"</span>
+                ],
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"LANCASTER"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"17604"</span>,
+                <span class="hljs-string">"state"</span>: <span class="hljs-string">"PA"</span>
+            },
+            <span class="hljs-string">"allowanceCharge"</span>: {
+                <span class="hljs-string">"totalDiscount"</span>: <span class="hljs-string">"36.61"</span>,
+                <span class="hljs-string">"totalDiscountPercentage"</span>: <span class="hljs-string">"0.000"</span>
+            },
+            <span class="hljs-string">"payableAmount"</span>: <span class="hljs-number">101.84</span>,
+            <span class="hljs-string">"chargeTotalAmount"</span>: <span class="hljs-number">138.45</span>,
+            <span class="hljs-string">"invoiceLine"</span>: [
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"1"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"SAID TO CONTAIN"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">1</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"1"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"SAID TO CONTAIN"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">1</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"1"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"SAID TO CONTAIN"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">1</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"1"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"SAID TO CONTAIN"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">1</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"2"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"TENDERED ON SHIPPER WRAPPED SKIDS"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">4</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"2"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"TENDERED ON SHIPPER WRAPPED SKIDS"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">4</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"2"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"TENDERED ON SHIPPER WRAPPED SKIDS"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">4</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"2"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"TENDERED ON SHIPPER WRAPPED SKIDS"</span>
+                    ],
+                    <span class="hljs-string">"quantity"</span>: <span class="hljs-number">4</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"FOAM"</span>
+                    ],
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">16</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"FOAM"</span>
+                    ],
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">16</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"FOAM"</span>
+                    ],
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">16</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"FOAM"</span>
+                    ],
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">16</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"4"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"1CT;"</span>
+                    ],
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"4"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"1CT;"</span>
+                    ],
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"4"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"1CT;"</span>
+                    ],
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"4"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"1CT;"</span>
+                    ],
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"5"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"PRYZM VVATERTRONT SKY SIUE"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">129.61</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">140</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"5"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"PRYZM VVATERTRONT SKY SIUE"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">129.61</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">140</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"5"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"PRYZM VVATERTRONT SKY SIUE"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">129.61</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">140</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"5"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"PRYZM VVATERTRONT SKY SIUE"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">129.61</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">140</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"15"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"Fuel Surcharge added at 09.50%"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">8.84</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"15"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"Fuel Surcharge added at 09.50%"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">8.84</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"15"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"Fuel Surcharge added at 09.50%"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">8.84</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                },
+                {
+                    <span class="hljs-string">"id"</span>: <span class="hljs-string">"15"</span>,
+                    <span class="hljs-string">"note"</span>: [
+                        <span class="hljs-string">"Fuel Surcharge added at 09.50%"</span>
+                    ],
+                    <span class="hljs-string">"lineExtensionAmount"</span>: <span class="hljs-number">8.84</span>,
+                    <span class="hljs-string">"referenceNumber"</span>: [
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Purchase Order"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"PO"</span>
+                        },
+                        {
+                            <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"Bill of Lading"</span>,
+                            <span class="hljs-string">"documentTypeCode"</span>: <span class="hljs-string">"BOL"</span>
+                        }
+                    ]
+                }
+            ],
+            <span class="hljs-string">"firstArrivalPortLocation"</span>: {
+                <span class="hljs-string">"id"</span>: <span class="hljs-string">"003"</span>,
+                <span class="hljs-string">"description"</span>: <span class="hljs-string">"NFK"</span>
+            },
+            <span class="hljs-string">"lastExitPortLocation"</span>: {
+                <span class="hljs-string">"id"</span>: <span class="hljs-string">"058"</span>,
+                <span class="hljs-string">"description"</span>: <span class="hljs-string">"SEE"</span>
+            },
+            <span class="hljs-string">"grossWeightMeasure"</span>: <span class="hljs-number">156</span>,
+            <span class="hljs-string">"additionalDocumentReference"</span>: [
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0059313059"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0059313059"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0059313059"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0059313059"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"12.79"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0405278532"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"12.79"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"12.79"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"12.79"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"7705386"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"8007388848"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"SNO"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"8007388848"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"SNO"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"8007388848"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"SNO"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"8007388848"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"SNO"</span>
+                }
+            ],
+            <span class="hljs-string">"bol"</span>: <span class="hljs-string">"7705386"</span>,
+            <span class="hljs-string">"po"</span>: <span class="hljs-string">"7705386"</span>,
+            <span class="hljs-string">"deliveryDate"</span>: <span class="hljs-string">"2019-08-16"</span>
+        }
+    ],
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>
+    }
+}
+</code></pre>
+<h3 id="you-want-to-create-a-pickup-request-">You want to create a pickup request.</h3>
+<p>For more information, reference the <a href=" ##Pickup-Request-Object">Pickup Request Object</a> documentation for object parameters.</p>
+<pre><code class="lang-json">CURL:
+
+curl --location --request POST 'https:<span class="hljs-comment">//cloudapi.estes-express.com/v1/pickup-requests' \</span>
+--<span class="hljs-built_in">header</span> 'apikey: apikey-here' \
+--<span class="hljs-built_in">header</span> 'Authorization: Bearer your-<span class="hljs-built_in">token</span>-here' \
+--<span class="hljs-built_in">header</span> 'Content-<span class="hljs-built_in">Type</span>: application/json' \
+--data-raw '{
+    <span class="hljs-string">"requestNumber"</span>: <span class="hljs-string">"1234"</span>,
+    <span class="hljs-string">"shipper"</span>: {
+        <span class="hljs-string">"shipperName"</span>: <span class="hljs-string">"ACCEPTANCE TESTER"</span>,
+        <span class="hljs-string">"shipperAddress"</span>: {
+            <span class="hljs-string">"addressInfo"</span>: {
+                <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"30 FIREMENS WAY"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"POUGHKEEPSIE"</span>,
+                <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NY"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+            }
+        },
+        <span class="hljs-string">"shipperContacts"</span>: {
+            <span class="hljs-string">"shipperContact"</span>: [
+                {
+                    <span class="hljs-string">"contactInfo"</span>: {
+                        <span class="hljs-string">"name"</span>: {
+                            <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"SARAH"</span>,
+                            <span class="hljs-string">"middleName"</span>: <span class="hljs-string">"RANDAZZO X115"</span>,
+                            <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"INC"</span>
+                        },
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: {
+                            <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">845</span>,
+                            <span class="hljs-string">"number"</span>: <span class="hljs-number">4736780</span>,
+                            <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                        },
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    }
+                }
+            ]
+        }
+    },
+    <span class="hljs-string">"requestAction"</span>: <span class="hljs-string">"LL"</span>,
+    <span class="hljs-string">"paymentTerms"</span>: <span class="hljs-string">"PPD"</span>,
+    <span class="hljs-string">"pickupDate"</span>: <span class="hljs-string">"2020-07-24"</span>,
+    <span class="hljs-string">"pickupStartTime"</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-string">"pickupEndTime"</span>: <span class="hljs-number">1600</span>,
+    <span class="hljs-string">"totalPieces"</span>: <span class="hljs-number">188</span>,
+    <span class="hljs-string">"totalWeight"</span>: <span class="hljs-number">3720</span>,
+    <span class="hljs-string">"totalHandlingUnits"</span>: <span class="hljs-number">8</span>,
+    <span class="hljs-string">"whoRequested"</span>: <span class="hljs-string">"3"</span>,
+    <span class="hljs-string">"referenceNumbers"</span>: {
+        <span class="hljs-string">"referenceNumber"</span>: [
+            {
+                <span class="hljs-string">"referenceInfo"</span>: {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"BOL"</span>,
+                    <span class="hljs-string">"value"</span>: <span class="hljs-string">"407519"</span>,
+                    <span class="hljs-string">"required"</span>: <span class="hljs-string">"N"</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"commodities"</span>: {
+        <span class="hljs-string">"commodity"</span>: [
+            {
+                <span class="hljs-string">"commodityInfo"</span>: {
+                    <span class="hljs-string">"code"</span>: <span class="hljs-string">"100"</span>,
+                    <span class="hljs-string">"packageCode"</span>: <span class="hljs-string">"PT"</span>,
+                    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NOVELTIES"</span>,
+                    <span class="hljs-string">"pieces"</span>: <span class="hljs-number">188</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">3720</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"addresses"</span>: {
+        <span class="hljs-string">"address"</span>: [
+            {
+                <span class="hljs-string">"addressInfo"</span>: {
+                    <span class="hljs-string">"addressType"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"2110 LINCOLN HWY"</span>,
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"EDISON"</span>,
+                    <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                    <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"addressInfo"</span>: {
+                    <span class="hljs-string">"addressType"</span>: <span class="hljs-number">3</span>,
+                    <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"212 2nd Suite 205A"</span>,
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lakewood"</span>,
+                    <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                    <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"contacts"</span>: {
+        <span class="hljs-string">"contact"</span>: [
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"S"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"SARAH"</span>,
+                        <span class="hljs-string">"middleName"</span>: <span class="hljs-string">"RANDAZZO X115 BABYVISION"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"INC"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">845</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">4736780</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"NEWPORT"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"LOGISTICS"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">2871440</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">225</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-number">3</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Prompt"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Logistics"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">9058686</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"A"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Michelle"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Gutin"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"michael@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">9058686</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            }
+        ]
+    }
+}'
+
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: {
+        <span class="hljs-string">"requestNumber"</span>: <span class="hljs-string">"66307782"</span>
+    },
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"validationFailures"</span>: <span class="hljs-built_in">null</span>
+    }
+}
+</code></pre>
+<h3 id="you-want-to-update-a-pickup-request-update-by-the-following-date-pieces-weight-contacts-reference-ids-">You want to update a pickup request (update by the following: date, pieces, weight, contacts, reference IDs)</h3>
+<p>For more information, reference the <a href=" ##Pickup-Request-Object">Pickup Request Object</a> documentation for object parameters.</p>
+<pre><code class="lang-json">CURL:
+
+curl --location --request PUT 'https:<span class="hljs-comment">//cloudapi.estes-express.com/v1/pickup-requests' \</span>
+--<span class="hljs-built_in">header</span> 'apikey: apikey-here' \
+--<span class="hljs-built_in">header</span> 'Authorization: Bearer your-<span class="hljs-built_in">token</span>-here' \
+--<span class="hljs-built_in">header</span> 'Content-<span class="hljs-built_in">Type</span>: application/json' \
+--data-raw '{
+    <span class="hljs-string">"requestNumber"</span>: <span class="hljs-string">"66263321"</span>,
+    <span class="hljs-string">"shipper"</span>: {
+        <span class="hljs-string">"shipperName"</span>: <span class="hljs-string">"ACCEPTANCE TESTER"</span>,
+        <span class="hljs-string">"shipperAddress"</span>: {
+            <span class="hljs-string">"addressInfo"</span>: {
+                <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"30 FIREMENS WAY"</span>,
+                <span class="hljs-string">"city"</span>: <span class="hljs-string">"POUGHKEEPSIE"</span>,
+                <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NY"</span>,
+                <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+            }
+        },
+        <span class="hljs-string">"shipperContacts"</span>: {
+            <span class="hljs-string">"shipperContact"</span>: [
+                {
+                    <span class="hljs-string">"contactInfo"</span>: {
+                        <span class="hljs-string">"name"</span>: {
+                            <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"SARAH"</span>,
+                            <span class="hljs-string">"middleName"</span>: <span class="hljs-string">"RANDAZZO X115"</span>,
+                            <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"INC"</span>
+                        },
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: {
+                            <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">845</span>,
+                            <span class="hljs-string">"number"</span>: <span class="hljs-number">4736780</span>,
+                            <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                        },
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    }
+                }
+            ]
+        }
+    },
+    <span class="hljs-string">"requestAction"</span>: <span class="hljs-string">"LL"</span>,
+    <span class="hljs-string">"paymentTerms"</span>: <span class="hljs-string">"PPD"</span>,
+    <span class="hljs-string">"pickupDate"</span>: <span class="hljs-string">"2020-07-24"</span>,
+    <span class="hljs-string">"pickupStartTime"</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-string">"pickupEndTime"</span>: <span class="hljs-number">1600</span>,
+    <span class="hljs-string">"totalPieces"</span>: <span class="hljs-number">188</span>,
+    <span class="hljs-string">"totalWeight"</span>: <span class="hljs-number">3720</span>,
+    <span class="hljs-string">"totalHandlingUnits"</span>: <span class="hljs-number">8</span>,
+    <span class="hljs-string">"whoRequested"</span>: <span class="hljs-string">"3"</span>,
+    <span class="hljs-string">"referenceNumbers"</span>: {
+        <span class="hljs-string">"referenceNumber"</span>: [
+            {
+                <span class="hljs-string">"referenceInfo"</span>: {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"BOL"</span>,
+                    <span class="hljs-string">"value"</span>: <span class="hljs-string">"407519"</span>,
+                    <span class="hljs-string">"required"</span>: <span class="hljs-string">"N"</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"commodities"</span>: {
+        <span class="hljs-string">"commodity"</span>: [
+            {
+                <span class="hljs-string">"commodityInfo"</span>: {
+                    <span class="hljs-string">"code"</span>: <span class="hljs-string">"100"</span>,
+                    <span class="hljs-string">"packageCode"</span>: <span class="hljs-string">"PT"</span>,
+                    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NOVELTIES"</span>,
+                    <span class="hljs-string">"pieces"</span>: <span class="hljs-number">188</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">3720</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"addresses"</span>: {
+        <span class="hljs-string">"address"</span>: [
+            {
+                <span class="hljs-string">"addressInfo"</span>: {
+                    <span class="hljs-string">"addressType"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"2110 LINCOLN HWY"</span>,
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"EDISON"</span>,
+                    <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                    <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"addressInfo"</span>: {
+                    <span class="hljs-string">"addressType"</span>: <span class="hljs-number">3</span>,
+                    <span class="hljs-string">"addressLine1"</span>: <span class="hljs-string">"212 2nd Suite 205A"</span>,
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lakewood"</span>,
+                    <span class="hljs-string">"stateProvince"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-number">12603</span>,
+                    <span class="hljs-string">"countryAbbrev"</span>: <span class="hljs-string">"US"</span>
+                }
+            }
+        ]
+    },
+    <span class="hljs-string">"contacts"</span>: {
+        <span class="hljs-string">"contact"</span>: [
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"S"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"SARAH"</span>,
+                        <span class="hljs-string">"middleName"</span>: <span class="hljs-string">"RANDAZZO X115 BABYVISION"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"INC"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">845</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">4736780</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"NEWPORT"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"LOGISTICS"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">2871440</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">225</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-number">3</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Prompt"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Logistics"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">9058686</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            },
+            {
+                <span class="hljs-string">"contactInfo"</span>: {
+                    <span class="hljs-string">"contactType"</span>: <span class="hljs-string">"A"</span>,
+                    <span class="hljs-string">"name"</span>: {
+                        <span class="hljs-string">"firstName"</span>: <span class="hljs-string">"Michelle"</span>,
+                        <span class="hljs-string">"lastName"</span>: <span class="hljs-string">"Gutin"</span>
+                    },
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"michael@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: {
+                        <span class="hljs-string">"areaCode"</span>: <span class="hljs-number">732</span>,
+                        <span class="hljs-string">"number"</span>: <span class="hljs-number">9058686</span>,
+                        <span class="hljs-string">"extension"</span>: <span class="hljs-number">1234</span>
+                    },
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            }
+        ]
+    }
+}'
+
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: {
+        <span class="hljs-string">"requestNumber"</span>: <span class="hljs-string">"66307782"</span>
+    },
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"validationFailures"</span>: <span class="hljs-built_in">null</span>
+    }
+}
+</code></pre>
+<h3 id="you-want-to-cancel-a-pickup-request">You want to cancel a pickup request</h3>
+<p>Pass the pickup request number in the call.</p>
+<pre><code class="lang-json">CURL:
+
+curl <span class="hljs-comment">--location --request DELETE 'https://cloudapi.estes-express.com/v1/pickup-requests/66263321' \</span>
+<span class="hljs-comment">--header 'apikey: apikey-here' \</span>
+<span class="hljs-comment">--header 'Authorization: Bearer your-token-here' \</span>
+<span class="hljs-comment">--header 'Content-Type: application/json' \</span>
+<span class="hljs-comment">--data-raw '{</span>
+    "requestNumber": "66307782",
+    "<span class="hljs-keyword">comment</span><span class="hljs-string">": {
+        "</span><span class="hljs-keyword">type</span><span class="hljs-string">": "</span>ABC<span class="hljs-string">",
+        "</span><span class="hljs-built_in">text</span><span class="hljs-string">": "</span><span class="hljs-keyword">Sample</span> <span class="hljs-built_in">text</span> <span class="hljs-keyword">for</span> <span class="hljs-keyword">comment</span><span class="hljs-string">"
+    }
+}'
+
+RESPONSE SCHEMA:
+
+{
+    "</span><span class="hljs-keyword">data</span><span class="hljs-string">": {
+        "</span>requestNumber<span class="hljs-string">": "</span><span class="hljs-number">66307782</span><span class="hljs-string">"
+    },
+    "</span><span class="hljs-keyword">error</span><span class="hljs-string">": {
+        "</span>code<span class="hljs-string">": 0,
+        "</span>message<span class="hljs-string">": "",
+        "</span>details<span class="hljs-string">": "",
+        "</span>validationFailures<span class="hljs-string">": null
+    }
+}</span>
+</code></pre>
+<h3 id="you-want-to-get-pickup-status-information">You want to get Pickup Status information</h3>
+<p>Pass the pickup request number in the call.</p>
+<pre><code class="lang-json">CURL:
+
+curl --location --request GET <span class="hljs-string">'https://cloudapi.estes-express.com/v1/pickup-requests/66263321'</span> \
+--header <span class="hljs-string">'apikey: apikey-here'</span> \
+--header <span class="hljs-string">'Authorization: Bearer your-token-here'</span>
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: [
+        {
+            <span class="hljs-string">"requestNumber"</span>: <span class="hljs-string">"66307782"</span>,
+            <span class="hljs-string">"pro"</span>: <span class="hljs-string">""</span>,
+            <span class="hljs-string">"status"</span>: {
+                <span class="hljs-string">"description"</span>: <span class="hljs-string">"No freight received"</span>,
+                <span class="hljs-string">"reason"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"reasonCode"</span>: <span class="hljs-string">""</span>
+            },
+            <span class="hljs-string">"shipper"</span>: {
+                <span class="hljs-string">"name"</span>: <span class="hljs-string">"ACCEPTANCE TESTER"</span>,
+                <span class="hljs-string">"accountCode"</span>: <span class="hljs-string">"0100777"</span>,
+                <span class="hljs-string">"address"</span>: {
+                    <span class="hljs-string">"line"</span>: [
+                        <span class="hljs-string">"30 FIREMENS WAY"</span>
+                    ],
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"POUGHKEEPSIE"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"NY"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"12603"</span>,
+                    <span class="hljs-string">"country"</span>: <span class="hljs-string">"US"</span>
+                },
+                <span class="hljs-string">"contacts"</span>: [
+                    {
+                        <span class="hljs-string">"type"</span>: <span class="hljs-string">"S"</span>,
+                        <span class="hljs-string">"name"</span>: <span class="hljs-string">"SARAH RANDAZZO X115 INC"</span>,
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"8454736780 x 1234"</span>,
+                        <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    },
+                    {
+                        <span class="hljs-string">"type"</span>: <span class="hljs-string">"S"</span>,
+                        <span class="hljs-string">"name"</span>: <span class="hljs-string">"SARAH RANDAZZO X115 BABYVISION INC"</span>,
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"8454736780 x 1234"</span>,
+                        <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    },
+                    {
+                        <span class="hljs-string">"type"</span>: <span class="hljs-string">"S"</span>,
+                        <span class="hljs-string">"name"</span>: <span class="hljs-string">"SARAH RANDAZZO X115 BABYVISION INC"</span>,
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"8454736780 x 1234"</span>,
+                        <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    },
+                    {
+                        <span class="hljs-string">"type"</span>: <span class="hljs-string">"S"</span>,
+                        <span class="hljs-string">"name"</span>: <span class="hljs-string">"SARAH RANDAZZO X115 BABYVISION INC"</span>,
+                        <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"8454736780 x 1234"</span>,
+                        <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                        <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                    }
+                ]
+            },
+            <span class="hljs-string">"requestAction"</span>: <span class="hljs-string">"LL"</span>,
+            <span class="hljs-string">"paymentTerms"</span>: <span class="hljs-string">"PPD"</span>,
+            <span class="hljs-string">"totalPieces"</span>: <span class="hljs-number">188</span>,
+            <span class="hljs-string">"totalWeight"</span>: <span class="hljs-number">3720</span>,
+            <span class="hljs-string">"totalHandlingUnits"</span>: <span class="hljs-number">8</span>,
+            <span class="hljs-string">"hazmatFlag"</span>: <span class="hljs-string">"N"</span>,
+            <span class="hljs-string">"expeditedCode"</span>: <span class="hljs-string">""</span>,
+            <span class="hljs-string">"whoRequested"</span>: <span class="hljs-string">"3"</span>,
+            <span class="hljs-string">"userName"</span>: <span class="hljs-string">"OMEGA1"</span>,
+            <span class="hljs-string">"userAccount"</span>: <span class="hljs-string">"2895833"</span>,
+            <span class="hljs-string">"pickupDate"</span>: <span class="hljs-string">"2020-08-26"</span>,
+            <span class="hljs-string">"pickupStartTime"</span>: <span class="hljs-string">"10:00:00-04:00"</span>,
+            <span class="hljs-string">"pickupEndTime"</span>: <span class="hljs-string">"16:00:00-04:00"</span>,
+            <span class="hljs-string">"appointmentHistory"</span>: [
+                {
+                    <span class="hljs-string">"startDate"</span>: <span class="hljs-string">"2020-08-26"</span>,
+                    <span class="hljs-string">"startTime"</span>: <span class="hljs-string">"10:00:00-04:00"</span>,
+                    <span class="hljs-string">"endDate"</span>: <span class="hljs-string">"2020-08-26"</span>,
+                    <span class="hljs-string">"endTime"</span>: <span class="hljs-string">"16:00:00-04:00"</span>,
+                    <span class="hljs-string">"createdDate"</span>: <span class="hljs-string">"2020-08-26"</span>,
+                    <span class="hljs-string">"createdTime"</span>: <span class="hljs-string">"19:25:07+0000"</span>
+                }
+            ],
+            <span class="hljs-string">"transportEvent"</span>: {
+                <span class="hljs-string">"driver"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"driverCoordinates"</span>: [
+                    <span class="hljs-string">""</span>,
+                    <span class="hljs-string">""</span>
+                ],
+                <span class="hljs-string">"estimatedPickupDate"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"estimatedPickupTime"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"stopsAway"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"lastUpdatedDate"</span>: <span class="hljs-string">""</span>,
+                <span class="hljs-string">"lastUpdatedTime"</span>: <span class="hljs-string">""</span>
+            },
+            <span class="hljs-string">"trailers"</span>: [],
+            <span class="hljs-string">"referenceNumbers"</span>: [
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"BOL"</span>,
+                    <span class="hljs-string">"value"</span>: <span class="hljs-string">"407519"</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"BOL"</span>,
+                    <span class="hljs-string">"value"</span>: <span class="hljs-string">"407519"</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"BOL"</span>,
+                    <span class="hljs-string">"value"</span>: <span class="hljs-string">"407519"</span>
+                }
+            ],
+            <span class="hljs-string">"commodities"</span>: [
+                {
+                    <span class="hljs-string">"code"</span>: <span class="hljs-string">"100"</span>,
+                    <span class="hljs-string">"packageCode"</span>: <span class="hljs-string">"PT"</span>,
+                    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NOVELTIES"</span>,
+                    <span class="hljs-string">"hazmat"</span>: {
+                        <span class="hljs-string">"hazmatCode"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"hazmatFlag"</span>: <span class="hljs-string">""</span>
+                    },
+                    <span class="hljs-string">"pieces"</span>: <span class="hljs-number">188</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">3720</span>,
+                    <span class="hljs-string">"nmfcNumber"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"nmfcSubNumber"</span>: <span class="hljs-string">""</span>
+                },
+                {
+                    <span class="hljs-string">"code"</span>: <span class="hljs-string">"100"</span>,
+                    <span class="hljs-string">"packageCode"</span>: <span class="hljs-string">"PT"</span>,
+                    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NOVELTIES"</span>,
+                    <span class="hljs-string">"hazmat"</span>: {
+                        <span class="hljs-string">"hazmatCode"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"hazmatFlag"</span>: <span class="hljs-string">""</span>
+                    },
+                    <span class="hljs-string">"pieces"</span>: <span class="hljs-number">188</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">3720</span>,
+                    <span class="hljs-string">"nmfcNumber"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"nmfcSubNumber"</span>: <span class="hljs-string">""</span>
+                },
+                {
+                    <span class="hljs-string">"code"</span>: <span class="hljs-string">"100"</span>,
+                    <span class="hljs-string">"packageCode"</span>: <span class="hljs-string">"PT"</span>,
+                    <span class="hljs-string">"description"</span>: <span class="hljs-string">"NOVELTIES"</span>,
+                    <span class="hljs-string">"hazmat"</span>: {
+                        <span class="hljs-string">"hazmatCode"</span>: <span class="hljs-string">""</span>,
+                        <span class="hljs-string">"hazmatFlag"</span>: <span class="hljs-string">""</span>
+                    },
+                    <span class="hljs-string">"pieces"</span>: <span class="hljs-number">188</span>,
+                    <span class="hljs-string">"weight"</span>: <span class="hljs-number">3720</span>,
+                    <span class="hljs-string">"nmfcNumber"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"nmfcSubNumber"</span>: <span class="hljs-string">""</span>
+                }
+            ],
+            <span class="hljs-string">"comments"</span>: [
+                {
+                    <span class="hljs-string">"text"</span>: <span class="hljs-string">"Customer Cancelled P/U Request"</span>
+                },
+                {
+                    <span class="hljs-string">"text"</span>: <span class="hljs-string">"Sample text for comment"</span>
+                }
+            ],
+            <span class="hljs-string">"addresses"</span>: [
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"A"</span>,
+                    <span class="hljs-string">"line"</span>: [],
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"country"</span>: <span class="hljs-string">""</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"line"</span>: [
+                        <span class="hljs-string">"2110 LINCOLN HWY"</span>
+                    ],
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"EDISON"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"12603"</span>,
+                    <span class="hljs-string">"country"</span>: <span class="hljs-string">"US"</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"line"</span>: [
+                        <span class="hljs-string">"212 2nd Suite 205A"</span>
+                    ],
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lakewood"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"NJ"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"12603"</span>,
+                    <span class="hljs-string">"country"</span>: <span class="hljs-string">"US"</span>
+                }
+            ],
+            <span class="hljs-string">"contacts"</span>: [
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"A"</span>,
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"Michelle  Gutin"</span>,
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"michael@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"7329058686 x 1234"</span>,
+                    <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"C"</span>,
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"NEWPORT  LOGISTICS"</span>,
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"7322871440 x 225"</span>,
+                    <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                },
+                {
+                    <span class="hljs-string">"type"</span>: <span class="hljs-string">"3"</span>,
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"Prompt  Logistics"</span>,
+                    <span class="hljs-string">"email"</span>: <span class="hljs-string">"info@promptlogistics.com"</span>,
+                    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"7329058686 x 1234"</span>,
+                    <span class="hljs-string">"fax"</span>: <span class="hljs-string">""</span>,
+                    <span class="hljs-string">"receiveNotifications"</span>: <span class="hljs-string">"Y"</span>,
+                    <span class="hljs-string">"notificationMethod"</span>: <span class="hljs-string">"E"</span>
+                }
+            ],
+            <span class="hljs-string">"notifications"</span>: [],
+            <span class="hljs-string">"originTerminal"</span>: {
+                <span class="hljs-string">"number"</span>: <span class="hljs-string">"061"</span>,
+                <span class="hljs-string">"name"</span>: <span class="hljs-string">"NEWBURGH"</span>,
+                <span class="hljs-string">"address"</span>: {
+                    <span class="hljs-string">"line"</span>: [
+                        <span class="hljs-string">"12 Stone Castle Road"</span>
+                    ],
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Rock Tavern"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"NY"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"12575"</span>,
+                    <span class="hljs-string">"country"</span>: <span class="hljs-string">"US"</span>
+                },
+                <span class="hljs-string">"telephone"</span>: <span class="hljs-string">"(845) 567-1080"</span>,
+                <span class="hljs-string">"fax"</span>: <span class="hljs-string">"18455676275"</span>,
+                <span class="hljs-string">"email"</span>: <span class="hljs-string">"custsrv@estes-express.com"</span>
+            }
+        }
+    ],
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"validationFailures"</span>: null
+    }
+}
+</code></pre>
+<h3 id="you-want-to-get-current-status-shipment-tracking-information">You want to get current status shipment tracking information</h3>
+<pre><code class="lang-json">CURL:
+
+curl --location --request GET <span class="hljs-string">'https://cloudapi.estes-express.com/v1/shipments/status?pro=1710510386'</span> \
+--header <span class="hljs-string">'apikey: apikey-here'</span> \
+--header <span class="hljs-string">'Authorization: Bearer your-token-here'</span>
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: [
+        {
+            <span class="hljs-string">"pro"</span>: <span class="hljs-string">"1710510386"</span>,
+            <span class="hljs-string">"documentReference"</span>: [
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0055178413"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"LOD222"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"LOD"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"005123221"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"39.77"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                },
+                {
+                    <span class="hljs-string">"ID"</span>: <span class="hljs-string">"817321379"</span>,
+                    <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                }
+            ],
+            <span class="hljs-string">"status"</span>: {},
+            <span class="hljs-string">"shipmentStatusTimestamp"</span>: <span class="hljs-string">" "</span>,
+            <span class="hljs-string">"estimatedDelivery"</span>: {},
+            <span class="hljs-string">"stopsAway"</span>: <span class="hljs-string">"2 Stops Away"</span>,
+            <span class="hljs-string">"dimensionalWeight"</span>: <span class="hljs-string">"648"</span>,
+            <span class="hljs-string">"consigneeParty"</span>: {
+                <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"4508113"</span>,
+                <span class="hljs-string">"address"</span>: {
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"JACKSONVILLE"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"FL"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"32219"</span>
+                }
+            },
+            <span class="hljs-string">"shipperParty"</span>: {
+                <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"9441301"</span>,
+                <span class="hljs-string">"address"</span>: {
+                    <span class="hljs-string">"city"</span>: <span class="hljs-string">"SOUTH BEND"</span>,
+                    <span class="hljs-string">"state"</span>: <span class="hljs-string">"IN"</span>,
+                    <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"46628"</span>
+                }
+            },
+            <span class="hljs-string">"destinationTerminal"</span>: {
+                <span class="hljs-string">"number"</span>: <span class="hljs-string">"045"</span>,
+                <span class="hljs-string">"name"</span>: <span class="hljs-string">"Jacksonville"</span>,
+                <span class="hljs-string">"address"</span>: {}
+            },
+            <span class="hljs-string">"interlineInfo"</span>: {
+                <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"SCAC333"</span>
+            },
+            <span class="hljs-string">"interlinePro"</span>: <span class="hljs-string">"ip-12799999"</span>
+        }
+    ],
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>
+    }
+}
+</code></pre>
+<h3 id="you-want-to-get-shipment-tracking-with-full-movement-history">You want to get shipment tracking with full movement history</h3>
+<p>Returns details of shipment history based on PRO or Reference Number.<br> Either a PRO or Reference Number (PO, BOL, LOD, or interline-pro) is required. </p>
+<h3 id="-available-parameters">## Available Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Passed</th>
+<th>Type</th>
+<th>Max</th>
+<th>Min</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pro</td>
+<td>query</td>
+<td>string</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>PRO-tracking number</td>
+</tr>
+<tr>
+<td>po</td>
+<td>query</td>
+<td>string</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>Purchase Order number</td>
+</tr>
+<tr>
+<td>bol</td>
+<td>query</td>
+<td>string</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>Bill Of Lading number</td>
+</tr>
+<tr>
+<td>lod</td>
+<td>query</td>
+<td>string</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>Load number for shipment tracking</td>
+</tr>
+<tr>
+<td>interline-pro</td>
+<td>query</td>
+<td>string</td>
+<td></td>
+<td></td>
+<td>N/A</td>
+<td>Interline pro for shipment tracking</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-json">CURL:
+
+curl --location --request GET <span class="hljs-string">'https://cloudapi.estes-express.com/v1/shipments/history?pro=1710510386'</span> \
+--header <span class="hljs-string">'apikey: apikey-here'</span> \
+--header <span class="hljs-string">'Authorization: Bearer your-token-here'</span>
+
+RESPONSE SCHEMA:
+
+{
+    <span class="hljs-string">"data"</span>: [
+        {
+            <span class="hljs-string">"shipmentStatus"</span>: {
+                <span class="hljs-string">"pro"</span>: <span class="hljs-string">"1710510386"</span>,
+                <span class="hljs-string">"documentReference"</span>: [
+                    {
+                        <span class="hljs-string">"ID"</span>: <span class="hljs-string">"0055178413"</span>,
+                        <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PUR"</span>
+                    },
+                    {
+                        <span class="hljs-string">"ID"</span>: <span class="hljs-string">"LOD222"</span>,
+                        <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"LOD"</span>
+                    },
+                    {
+                        <span class="hljs-string">"ID"</span>: <span class="hljs-string">"005123221"</span>,
+                        <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"PON"</span>
+                    },
+                    {
+                        <span class="hljs-string">"ID"</span>: <span class="hljs-string">"39.77"</span>,
+                        <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"DIM"</span>
+                    },
+                    {
+                        <span class="hljs-string">"ID"</span>: <span class="hljs-string">"817321379"</span>,
+                        <span class="hljs-string">"documentType"</span>: <span class="hljs-string">"BOL"</span>
+                    }
+                ],
+                <span class="hljs-string">"status"</span>: {},
+                <span class="hljs-string">"shipmentStatusTimestamp"</span>: <span class="hljs-string">" "</span>,
+                <span class="hljs-string">"estimatedDelivery"</span>: {},
+                <span class="hljs-string">"stopsAway"</span>: <span class="hljs-string">"2 Stops Away"</span>,
+                <span class="hljs-string">"dimensionalWeight"</span>: <span class="hljs-string">"648"</span>,
+                <span class="hljs-string">"consigneeParty"</span>: {
+                    <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"4508113"</span>,
+                    <span class="hljs-string">"address"</span>: {
+                        <span class="hljs-string">"city"</span>: <span class="hljs-string">"JACKSONVILLE"</span>,
+                        <span class="hljs-string">"state"</span>: <span class="hljs-string">"FL"</span>,
+                        <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"32219"</span>
+                    }
+                },
+                <span class="hljs-string">"shipperParty"</span>: {
+                    <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"9441301"</span>,
+                    <span class="hljs-string">"address"</span>: {
+                        <span class="hljs-string">"city"</span>: <span class="hljs-string">"SOUTH BEND"</span>,
+                        <span class="hljs-string">"state"</span>: <span class="hljs-string">"IN"</span>,
+                        <span class="hljs-string">"postalCode"</span>: <span class="hljs-string">"46628"</span>
+                    }
+                },
+                <span class="hljs-string">"destinationTerminal"</span>: {
+                    <span class="hljs-string">"number"</span>: <span class="hljs-string">"045"</span>,
+                    <span class="hljs-string">"name"</span>: <span class="hljs-string">"Jacksonville"</span>,
+                    <span class="hljs-string">"address"</span>: {}
+                },
+                <span class="hljs-string">"interlineInfo"</span>: {
+                    <span class="hljs-string">"referenceNumber"</span>: <span class="hljs-string">"SCAC333"</span>
+                },
+                <span class="hljs-string">"interlinePro"</span>: <span class="hljs-string">"ip-12799999"</span>
+            },
+            <span class="hljs-string">"movementHistory"</span>: [
+                {
+                    <span class="hljs-string">"contact"</span>: {},
+                    <span class="hljs-string">"currentStatus"</span>: [
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Arrived"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Load"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Departed"</span>
+                        }
+                    ],
+                    <span class="hljs-string">"location"</span>: {
+                        <span class="hljs-string">"address"</span>: {},
+                        <span class="hljs-string">"locationCoordinate"</span>: [
+                            <span class="hljs-string">""</span>,
+                            <span class="hljs-string">""</span>
+                        ]
+                    }
+                },
+                {
+                    <span class="hljs-string">"contact"</span>: {},
+                    <span class="hljs-string">"currentStatus"</span>: [
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Arrived"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Departed"</span>
+                        }
+                    ],
+                    <span class="hljs-string">"location"</span>: {
+                        <span class="hljs-string">"address"</span>: {},
+                        <span class="hljs-string">"locationCoordinate"</span>: [
+                            <span class="hljs-string">""</span>,
+                            <span class="hljs-string">""</span>
+                        ]
+                    }
+                },
+                {
+                    <span class="hljs-string">"contact"</span>: {},
+                    <span class="hljs-string">"currentStatus"</span>: [
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Arrived"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Departed"</span>
+                        }
+                    ],
+                    <span class="hljs-string">"location"</span>: {
+                        <span class="hljs-string">"address"</span>: {},
+                        <span class="hljs-string">"locationCoordinate"</span>: [
+                            <span class="hljs-string">""</span>,
+                            <span class="hljs-string">""</span>
+                        ]
+                    }
+                },
+                {
+                    <span class="hljs-string">"contact"</span>: {},
+                    <span class="hljs-string">"currentStatus"</span>: [
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Arrived"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Loaded"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Driver Assigned"</span>
+                        },
+                        {
+                            <span class="hljs-string">"description"</span>: <span class="hljs-string">"Departed"</span>
+                        }
+                    ],
+                    <span class="hljs-string">"location"</span>: {
+                        <span class="hljs-string">"address"</span>: {},
+                        <span class="hljs-string">"locationCoordinate"</span>: [
+                            <span class="hljs-string">""</span>,
+                            <span class="hljs-string">""</span>
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    <span class="hljs-string">"error"</span>: {
+        <span class="hljs-string">"code"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"message"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"details"</span>: <span class="hljs-string">""</span>
+    }
+}
+</code></pre>
+<h2 id="geo-location">Geo Location</h2>
+<p><a name="geolocation"></a></p>
+<p>Geo Location (GPS) data represents the physical location of freight at key points while in transit. The timing and availability of geo location information is dependent on the stage of the transit lifecycle. For example, there are more triggering events when freight is Out for Delivery than when moving through the Line Haul network. Data is collected through Driver Hand Held (HH) devices and the Line Haul Central Dispatch network. Be aware that GPS data may not be available during transit depending on certain conditions.</p>
+<p>The following table indicates the availability of geo location data returned by the Tracking API:</p>
+<table>
+<thead>
+<tr>
+<th>Freight Movement (Location)</th>
+<th>Geo Location Data Availability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origin Terminal</td>
+<td>Yes (Departure only*) No freight at this point.</td>
+</tr>
+<tr>
+<td>Stops Away From Pickup</td>
+<td>Yes (Departure only*) No freight at this point.</td>
+</tr>
+<tr>
+<td>Pick Up</td>
+<td>Yes (Departure only*)</td>
+</tr>
+<tr>
+<td>Return to Origin Terminal</td>
+<td>Yes (Departure only*)</td>
+</tr>
+<tr>
+<td>Hub(s)</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Line Haul Meet Point**</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Destination Terminal</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Stops away from delivery</td>
+<td>Yes (Departure only*)</td>
+</tr>
+<tr>
+<td>Delivery Location</td>
+<td>Yes (Departure only*)</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>* &quot;Departure only&quot; indicates data is collected when the Estes vehicle has departed the location.</p>
+<p>** Certain Line Haul Meet Point locations may not be on the Central Dispatch network and may not have GPS data. </p>
+<p>Geo Location data is presented in <strong>longitude, latitude</strong> order. </p>
+<p>The following example is presented in this JSON fragment returned from Shipment Tracking and Pickup APIs. </p>
+<p><code>&quot;geoCoordinates&quot;: [</code>
+<code>&quot;-72.900644&quot;,</code>
+<code>&quot;41.547504&quot;</code>
+<code>],</code></p>
+<h2 id="push-services-subscriptions-">Push Services (Subscriptions)</h2>
+<p><a name="push"></a></p>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

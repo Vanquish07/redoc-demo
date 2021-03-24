@@ -5,12 +5,17 @@ Our APIs are a fast and easy way to integrate our shipping functionality into yo
 # Accessing Our APIs
 
 To use our APIs, you will need to generate an API key for the production environment and another API key for the test environment. This API key is used for all APIs. These keys are the only ones needed to communicate with our APIs.
+
 (API keys are not used with Estes legacy web services. To review older web services, see
 <https://www.estes-express.com/resources/digital-services/api/index>.)
 
--   If you are a Transportation Management System (TMS) API customer (these are TMS providers who want to connect to Estes APIs on behalf of multiple customers need to use a client ID)
+-   If you are a TMS provider who wants to connect to Estes APIs on behalf of
+    multiple customers need to use a client ID, see (Transportation Management
+    System) **TMS API Customers**  
 
--   If you are an Individual/Direct API customer (these are individual customers who want to connect to Estes APIs directly who use their MyEstes username and password to create an API key)
+-   If you are an individual customer who wants to connect to Estes APIs directly
+    who use their MyEstes username and password to create an API key, see
+    **Individual/Direct API Customers**
 
 ## TMS API Customers
 

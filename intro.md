@@ -1,19 +1,3 @@
----
-title: Estes Express API Developer Portal
-
-language_tabs:
-  - json
-
-includes:
-  - examples
-  - pickuprequest
-  - pushservices
-  - datadefinitions  
-  - geolocation
-
-search: true
----
-
 # Introduction
 
 Our APIs are a fast and easy way to integrate our shipping functionality into

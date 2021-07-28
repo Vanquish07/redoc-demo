@@ -1,14 +1,21 @@
 openapi: 3.0.3
 info:
-  title: Estes Express API Suite
-  description: APIs provided by Estes Express to partners
+  title: Estes Express API Suite For Partners
   version: 1.13.9
   contact:
     name: Estes Express API Support
     url: http://www.estes-express.com/resources/digital-services/API/
-    email: WebSupport@estes-express.com
+    email: WebSupport@estes-express.com  
+  description: 
+    $ref: https://vanquish07.github.io/redoc-demo/intro.md 
+  x-logo:
+    url: 'https://www.estes-express.com/application/themes/estes/images/estes-logo-yellow.png'
+    altText: Estes Express logo  
 servers:
   - url: https://dev-cloudapi.estes-express.com
+externalDocs:
+  description: Additional resources can be found here.
+  url: 'https://vanquish07.github.io/redoc-demo/estes-docs.html'    
 paths:
   /authenticate:
     post:

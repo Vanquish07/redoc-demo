@@ -1,17 +1,14 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
-  title: Estes Express API Suite For Partners
-  version: 1.12.3  
-  description: 
-    $ref: https://vanquish07.github.io/redoc-demo/intro.md 
-  x-logo:
-    url: 'https://www.estes-express.com/application/themes/estes/images/estes-logo-yellow.png'
-    altText: Estes Express logo  
+  title: Estes Express API Suite
+  description: APIs provided by Estes Express to partners
+  version: 1.13.9
+  contact:
+    name: Estes Express API Support
+    url: http://www.estes-express.com/resources/digital-services/API/
+    email: WebSupport@estes-express.com
 servers:
   - url: https://dev-cloudapi.estes-express.com
-externalDocs:
-  description: Additional resources can be found here.
-  url: 'https://vanquish07.github.io/redoc-demo/estes-docs.html'      
 paths:
   /authenticate:
     post:
@@ -21,6 +18,7 @@ paths:
       description: Provides a bearer token for an authenticated user that is required to
         access other APIs. The credentials of the user should be passed in the
         request using an Authorization header of the Basic authentication type.
+      operationId: getAuthToken
       responses:
         "200":
           description: OK (Successfully authenticated.)
@@ -73,6 +71,7 @@ paths:
         <br>Either a PRO or Reference Number (PO or BOL) is required.
         <br>Requires a valid bearer token in the Authorization header of the
         request.
+      operationId: getInvoices
       parameters:
         - name: pro
           in: query
@@ -133,39 +132,35 @@ paths:
                         issueDate:
                           type: string
                           format: date
-                        note:
-                          type: array
-                          items:
-                            type: string
                         pro:
                           type: string
                         dueDate:
                           type: string
                           format: date
+                        invoiceVersion:
+                          type: string
+                        freightBillEntryDate:
+                          type: string
+                          format: date
+                        billToIndicator:
+                          type: string
                         consignorAssignedID:
                           type: string
                         consigneeParty:
                           type: object
                           properties:
-                            partyIdentification:
+                            accountNumber:
                               type: array
                               items:
                                 type: string
-                            partyName:
+                            name:
                               type: string
-                            addressLine:
-                              type: array
-                              items:
-                                type: string
-                            city:
-                              type: string
-                            postalCode:
-                              type: string
-                            state:
-                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1invoices/get/responses/200/conte\
+                                nt/application~1json/schema/properties/data/ite\
+                                ms/properties/accountingCustomerParty/propertie\
+                                s/address"
                             telephone:
-                              type: string
-                            country:
                               type: string
                         shipperParty:
                           $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
@@ -195,9 +190,38 @@ paths:
                             pplication~1json/schema/properties/data/items/prope\
                             rties/consigneeParty"
                         accountingCustomerParty:
-                          $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
-                            pplication~1json/schema/properties/data/items/prope\
-                            rties/consigneeParty"
+                          type: object
+                          properties:
+                            accountNumber:
+                              type: array
+                              items:
+                                type: string
+                            name:
+                              type: string
+                            serviceProviderParty:
+                              type: object
+                              properties:
+                                serviceType:
+                                  type: string
+                                name:
+                                  type: string
+                            address:
+                              type: object
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                            telephone:
+                              type: string
                         allowanceCharge:
                           type: object
                           properties:
@@ -205,12 +229,27 @@ paths:
                               type: string
                               example: X
                             totalDiscount:
-                              type: string
-                              example: "50.00"
+                              type: number
+                              format: double
+                              example: 50.5
                             totalDiscountPercentage:
+                              type: number
+                              format: double
+                              example: 0.5
+                            reasonCode:
                               type: string
-                              example: "0.500"
+                            reason:
+                              type: string
+                            fuelSurchargePercentage:
+                              type: number
+                              format: double
+                            fuelSurchargeAmount:
+                              type: number
+                              format: double
                         payableAmount:
+                          type: number
+                          format: double
+                        totalFreightCharges:
                           type: number
                           format: double
                         chargeTotalAmount:
@@ -219,6 +258,8 @@ paths:
                         amountPaid:
                           type: number
                           format: double
+                        currencyCode:
+                          type: string
                         invoiceLine:
                           type: array
                           items:
@@ -233,16 +274,35 @@ paths:
                               quantity:
                                 type: integer
                                 format: int64
-                              lineExtensionAmount:
+                              extendedAmount:
                                 type: number
                                 format: double
                               itemDescription:
                                 type: string
-                              hazardousCategoryCode:
-                                type: string
+                              hazmat:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  undgCode:
+                                    type: string
                               weight:
                                 type: integer
                                 format: int64
+                              unitOfMeasure:
+                                type: string
+                              cwtRate:
+                                type: number
+                                format: double
+                              specialRate:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                    cost:
+                                      type: string
                               documentReference:
                                 type: array
                                 description: This contains BOL number and PO number for
@@ -258,6 +318,12 @@ paths:
                                       type: string
                               commodityCode:
                                 type: string
+                              consigneeDepartment:
+                                type: string
+                              nmfcNumber:
+                                type: string
+                              nmfcSubNumber:
+                                type: string
                         firstArrivalPortLocation:
                           type: object
                           properties:
@@ -265,13 +331,21 @@ paths:
                               type: string
                             description:
                               type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
                         lastExitPortLocation:
                           $ref: "#/paths/~1v1~1invoices/get/responses/200/content/a\
                             pplication~1json/schema/properties/data/items/prope\
                             rties/firstArrivalPortLocation"
+                        totalPieces:
+                          type: string
                         grossWeightMeasure:
                           type: number
                           format: int32
+                        quote:
+                          type: string
                         invoiceType:
                           type: string
                         scacCode:
@@ -351,12 +425,6 @@ paths:
         "503":
           description: Service unavailable. Response body will be empty.
           content: {}
-      x-code-samples:
-        - lang: 'CURL'
-          source: |
-            curl --location --request GET 'https://cloudapi.estes-express.com/v1/invoices?pro=000000000' \
-            --header 'apikey: apikey-here' \
-            --header 'Authorization: Bearer your-token-here'          
   /v1/shipments:
     get:
       tags:
@@ -365,6 +433,7 @@ paths:
       description: Returns details of shipments associated with an account in the past 14
         days or a specified date range. Requires a valid bearer token in the
         Authorization header of the request.
+      operationId: getRecentShipments
       parameters:
         - name: role
           in: query
@@ -597,36 +666,50 @@ paths:
         not authorized for the shipment, a redacted payload will be returned.
         <br> Requires a valid bearer token in the Authorization header of the
         request.
+      operationId: getShipmentHistory
       parameters:
         - name: pro
           in: query
-          description: PRO-tracking number
+          description: PRO tracking number
           schema:
-            type: string
+            type: number
+            pattern: $\d{10}
+            maxLength: 10
+            minLength: 10
         - name: po
           in: query
           description: Purchase Order number
           schema:
+            maxLength: 15
+            minLength: 1
             type: string
         - name: bol
           in: query
           description: Bill Of Lading number
           schema:
+            maxLength: 25
+            minLength: 1
             type: string
         - name: pur
           in: query
           description: Pickup Request number
           schema:
+            maxLength: 10
+            minLength: 1
             type: string
         - name: ldn
           in: query
           description: Load number
           schema:
+            maxLength: 25
+            minLength: 1
             type: string
         - name: interline-pro
           in: query
-          description: Interline PRO
+          description: Interline PRO (From/To)
           schema:
+            maxLength: 15
+            minLength: 1
             type: string
         - name: party-to
           in: query
@@ -661,7 +744,7 @@ paths:
                           items:
                             type: object
                             properties:
-                              ID:
+                              id:
                                 type: string
                               documentType:
                                 type: string
@@ -669,6 +752,16 @@ paths:
                           type: string
                         pickupDate:
                           type: string
+                        pickupTime:
+                          type: string
+                        expeditedCode:
+                          type: string
+                        expeditedDescription:
+                          type: string
+                        isResidential:
+                          type: boolean
+                        isTruckload:
+                          type: boolean
                         status:
                           type: object
                           properties:
@@ -707,6 +800,8 @@ paths:
                               type: string
                             endTime:
                               type: string
+                        transitDays:
+                          type: string
                         driverInfo:
                           type: object
                           properties:
@@ -754,7 +849,31 @@ paths:
                           type: string
                         totalWeight:
                           type: string
+                        freightCharges:
+                          type: string
+                        terms:
+                          type: string
                         consigneeParty:
+                          type: object
+                          properties:
+                            accountNumber:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              $ref: "#/paths/~1v1~1shipments~1history/get/responses\
+                                /200/content/application~1json/schema/propertie\
+                                s/data/items/properties/thirdParty/properties/a\
+                                ddress"
+                            geoCoordinates:
+                              type: array
+                              items:
+                                type: string
+                        shipperParty:
+                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
+                            /content/application~1json/schema/properties/data/i\
+                            tems/properties/consigneeParty"
+                        thirdParty:
                           type: object
                           properties:
                             accountNumber:
@@ -774,14 +893,8 @@ paths:
                                   type: string
                                 postalCode:
                                   type: string
-                        shipperParty:
-                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
-                            /content/application~1json/schema/properties/data/i\
-                            tems/properties/consigneeParty"
-                        thirdParty:
-                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
-                            /content/application~1json/schema/properties/data/i\
-                            tems/properties/consigneeParty"
+                                country:
+                                  type: string
                         destinationTerminal:
                           type: object
                           properties:
@@ -792,14 +905,22 @@ paths:
                             address:
                               $ref: "#/paths/~1v1~1shipments~1history/get/responses\
                                 /200/content/application~1json/schema/propertie\
-                                s/data/items/properties/consigneeParty/properti\
-                                es/address"
+                                s/data/items/properties/thirdParty/properties/a\
+                                ddress"
+                            geoCoordinates:
+                              type: array
+                              items:
+                                type: string
                             telephone:
                               type: string
                             fax:
                               type: string
                             email:
                               type: string
+                        originTerminal:
+                          $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
+                            /content/application~1json/schema/properties/data/i\
+                            tems/properties/destinationTerminal"
                         interlineFrom:
                           type: object
                           properties:
@@ -811,8 +932,6 @@ paths:
                           $ref: "#/paths/~1v1~1shipments~1history/get/responses/200\
                             /content/application~1json/schema/properties/data/i\
                             tems/properties/interlineFrom"
-                        freightCharges:
-                          type: string
                         disclaimers:
                           type: array
                           items:
@@ -841,7 +960,7 @@ paths:
                                       $ref: "#/paths/~1v1~1shipments~1history/get/r\
                                         esponses/200/content/application~1json/\
                                         schema/properties/data/items/properties\
-                                        /consigneeParty/properties/address"
+                                        /thirdParty/properties/address"
                                   geoCoordinates:
                                     type: array
                                     items:
@@ -903,6 +1022,7 @@ paths:
       description: Create a new pickup request. The request should include an Authorization
         header with a valid bearer token corresponding to the user associated
         with the pickup request.
+      operationId: createPickupRequest
       requestBody:
         description: Complete details to create a new pickup request.
         content:
@@ -1128,6 +1248,20 @@ paths:
                                 type: string
                             type: object
                   type: object
+                consignee:
+                  type: object
+                  properties:
+                    accountCode:
+                      type: string
+                    accountName:
+                      type: string
+                thirdParty:
+                  type: object
+                  properties:
+                    accountCode:
+                      type: string
+                    accountName:
+                      type: string
                 addresses:
                   required:
                     - address
@@ -1306,359 +1440,6 @@ paths:
           description: Service unavailable. Response body will be empty.
           content: {}
       x-codegen-request-body-name: New Pickup Request
-  "/v1/pickup-requests/{requestNumber}":
-    get:
-      tags:
-        - Pickup
-      summary: Pickup request
-      description: Returns details of pickup request associated with a specific request
-        number. The request should include an Authorization header with a valid
-        bearer token corresponding to the user associated with the pickup
-        request.
-      parameters:
-        - name: requestNumber
-          in: path
-          description: The pickup request number
-          required: true
-          schema:
-            type: string
-      security:
-        - ApiKeyAuth: []
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Data object will contain the pickup request details for that
-            specific request number.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        requestNumber:
-                          type: string
-                        pro:
-                          type: string
-                        status:
-                          properties:
-                            description:
-                              type: string
-                            reason:
-                              type: string
-                            reasonCode:
-                              type: string
-                            referenceDate:
-                              type: string
-                            referenceTime:
-                              type: string
-                          type: object
-                        shipper:
-                          properties:
-                            name:
-                              type: string
-                            accountCode:
-                              type: string
-                            address:
-                              properties:
-                                line:
-                                  type: array
-                                  items:
-                                    type: string
-                                city:
-                                  type: string
-                                state:
-                                  type: string
-                                postalCode:
-                                  type: string
-                                country:
-                                  type: string
-                              type: object
-                            contacts:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  type:
-                                    type: string
-                                  name:
-                                    type: string
-                                  email:
-                                    type: string
-                                  phone:
-                                    type: string
-                                  fax:
-                                    type: string
-                                  receiveNotifications:
-                                    type: string
-                                  notificationMethod:
-                                    type: string
-                          type: object
-                        requestAction:
-                          type: string
-                        paymentTerms:
-                          type: string
-                        totalPieces:
-                          type: number
-                        totalWeight:
-                          type: number
-                        totalHandlingUnits:
-                          type: number
-                        hazmatFlag:
-                          type: string
-                        expeditedCode:
-                          type: string
-                        whoRequested:
-                          type: string
-                        userName:
-                          type: string
-                        userAccount:
-                          type: string
-                        thirdPartyName:
-                          type: string
-                        thirdPartyAccountCode:
-                          type: string
-                        consigneeName:
-                          type: string
-                        consigneeAccountCode:
-                          type: string
-                        pickupDate:
-                          type: string
-                        pickupStartTime:
-                          type: string
-                        pickupEndTime:
-                          type: string
-                        appointmentHistory:
-                          type: array
-                          items:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                startDate:
-                                  type: string
-                                startTime:
-                                  type: string
-                                endDate:
-                                  type: string
-                                endTime:
-                                  type: string
-                                createdDate:
-                                  type: string
-                                createdTime:
-                                  type: string
-                        transportEvent:
-                          properties:
-                            driver:
-                              type: string
-                            driverCoordinates:
-                              type: array
-                              items:
-                                type: string
-                            estimatedPickupDate:
-                              type: string
-                            estimatedPickupTime:
-                              type: string
-                            stopsAway:
-                              type: string
-                            lastUpdatedDate:
-                              type: string
-                            lastUpdatedTime:
-                              type: string
-                          type: object
-                        trailers:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              id:
-                                type: string
-                              length:
-                                type: string
-                              type:
-                                type: string
-                        referenceNumbers:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                type: string
-                              value:
-                                type: string
-                        commodities:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              code:
-                                type: string
-                              packageCode:
-                                type: string
-                              description:
-                                type: string
-                              hazmat:
-                                properties:
-                                  hazmatCode:
-                                    type: string
-                                  hazmatFlag:
-                                    type: string
-                                type: object
-                              pieces:
-                                type: number
-                              weight:
-                                type: number
-                              nmfcNumber:
-                                type: string
-                              nmfcSubNumber:
-                                type: string
-                        comments:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              text:
-                                type: string
-                        addresses:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                type: string
-                              line:
-                                type: array
-                                items:
-                                  type: string
-                              city:
-                                type: string
-                              state:
-                                type: string
-                              postalCode:
-                                type: string
-                              country:
-                                type: string
-                        contacts:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                type: string
-                              name:
-                                type: string
-                              email:
-                                type: string
-                              phone:
-                                type: string
-                              fax:
-                                type: string
-                              receiveNotifications:
-                                type: string
-                              notificationMethod:
-                                type: string
-                        notifications:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                type: string
-                        originTerminal:
-                          properties:
-                            number:
-                              type: string
-                            name:
-                              type: string
-                            address:
-                              properties:
-                                line:
-                                  type: array
-                                  items:
-                                    type: string
-                                city:
-                                  type: string
-                                state:
-                                  type: string
-                                postalCode:
-                                  type: string
-                                country:
-                                  type: string
-                              type: object
-                            telephone:
-                              type: string
-                            fax:
-                              type: string
-                            email:
-                              type: string
-                          type: object
-                  error:
-                    type: object
-                    properties:
-                      code:
-                        type: integer
-                        format: int32
-                      message:
-                        type: string
-                      details:
-                        type: string
-                      validationFailures:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            description:
-                              type: string
-                            field:
-                              type: string
-        "400":
-          description: Missing or invalid path parameter. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties: {}
-                  error:
-                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
-                      esponses/200/content/application~1json/schema/properties/\
-                      error"
-        "401":
-          description: Not authenticated. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
-                  nses/400/content/application~1json/schema"
-        "403":
-          description: Not authorized. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
-                  nses/400/content/application~1json/schema"
-        "404":
-          description: No pickup request found. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
-                  nses/400/content/application~1json/schema"
-        "500":
-          description: Internal server error. Data object will be empty.
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
-                  nses/400/content/application~1json/schema"
-        "503":
-          description: Service unavailable. Response body will be empty.
-          content: {}
     put:
       tags:
         - Pickup
@@ -1666,13 +1447,7 @@ paths:
       description: Update specific pickup request associated with an account. The request
         should include an Authorization header with a valid bearer token
         corresponding to the user associated with the pickup request.
-      parameters:
-        - name: requestNumber
-          in: path
-          description: The pickup request number used to update a specific pickup request.
-          required: true
-          schema:
-            type: string
+      operationId: updatePickupRequest
       requestBody:
         description: Details to be updated for a specific pickup request.
         content:
@@ -1957,6 +1732,20 @@ paths:
                                 type: string
                             type: object
                   type: object
+                consignee:
+                  type: object
+                  properties:
+                    accountCode:
+                      type: string
+                    accountName:
+                      type: string
+                thirdParty:
+                  type: object
+                  properties:
+                    accountCode:
+                      type: string
+                    accountName:
+                      type: string
                 addresses:
                   properties:
                     address:
@@ -2072,27 +1861,377 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      requestNumber:
-                        type: string
-                  error:
-                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
-                      esponses/200/content/application~1json/schema/properties/\
-                      error"
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/201/content/app\
+                  lication~1json/schema"
         "400":
           description: Missing or invalid path or/and body params. Data object will be
             empty.
           content:
             application/json:
               schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
-                  nses/400/content/application~1json/schema"
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
         "401":
           description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
+        "404":
+          description: No pickup request found. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
+        "500":
+          description: Internal server error. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests/post/responses/400/content/app\
+                  lication~1json/schema"
+        "503":
+          description: Service unavailable. Response body will be empty.
+          content: {}
+      x-codegen-request-body-name: Change Pickup Request
+  "/v1/pickup-requests/{requestNumber}":
+    get:
+      tags:
+        - Pickup
+      summary: Pickup request
+      description: Returns details of pickup request associated with a specific request
+        number. The request should include an Authorization header with a valid
+        bearer token corresponding to the user associated with the pickup
+        request.
+      operationId: getPickupRequest
+      parameters:
+        - name: requestNumber
+          in: path
+          description: The pickup request number
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Data object will contain the pickup request details for that
+            specific request number.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        requestNumber:
+                          type: string
+                        reconciledPros:
+                          type: array
+                          items:
+                            type: string
+                        status:
+                          properties:
+                            conciseStatus:
+                              type: string
+                            expandedStatus:
+                              type: string
+                            referenceDate:
+                              type: string
+                            referenceTime:
+                              type: string
+                            reasonCode:
+                              type: string
+                            reason:
+                              type: string
+                          type: object
+                        shipper:
+                          properties:
+                            name:
+                              type: string
+                            accountCode:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            contacts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                  name:
+                                    type: string
+                                  email:
+                                    type: string
+                                  phone:
+                                    type: string
+                                  fax:
+                                    type: string
+                                  receiveNotifications:
+                                    type: string
+                                  notificationMethod:
+                                    type: string
+                          type: object
+                        requestAction:
+                          type: string
+                        paymentTerms:
+                          type: string
+                        totalPieces:
+                          type: number
+                        totalWeight:
+                          type: number
+                        totalHandlingUnits:
+                          type: number
+                        hazmatFlag:
+                          type: string
+                        expeditedCode:
+                          type: string
+                        whoRequested:
+                          type: string
+                        userName:
+                          type: string
+                        userAccount:
+                          type: string
+                        thirdPartyName:
+                          type: string
+                        thirdPartyAccountCode:
+                          type: string
+                        consigneeName:
+                          type: string
+                        consigneeAccountCode:
+                          type: string
+                        pickupDate:
+                          type: string
+                        pickupStartTime:
+                          type: string
+                        pickupEndTime:
+                          type: string
+                        appointmentHistory:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                startDate:
+                                  type: string
+                                startTime:
+                                  type: string
+                                endDate:
+                                  type: string
+                                endTime:
+                                  type: string
+                                createdDate:
+                                  type: string
+                                createdTime:
+                                  type: string
+                        transportEvent:
+                          properties:
+                            driver:
+                              type: string
+                            driverCoordinates:
+                              type: array
+                              items:
+                                type: string
+                            estimatedPickupDate:
+                              type: string
+                            estimatedPickupTime:
+                              type: string
+                            stopsAway:
+                              type: string
+                            lastUpdatedDate:
+                              type: string
+                            lastUpdatedTime:
+                              type: string
+                          type: object
+                        trailers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              length:
+                                type: string
+                              type:
+                                type: string
+                        referenceNumbers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              value:
+                                type: string
+                        commodities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                              packageCode:
+                                type: string
+                              description:
+                                type: string
+                              hazmat:
+                                properties:
+                                  hazmatCode:
+                                    type: string
+                                  hazmatFlag:
+                                    type: string
+                                type: object
+                              pieces:
+                                type: number
+                              weight:
+                                type: number
+                              nmfcNumber:
+                                type: string
+                              nmfcSubNumber:
+                                type: string
+                        comments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              text:
+                                type: string
+                        addresses:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              line:
+                                type: array
+                                items:
+                                  type: string
+                              city:
+                                type: string
+                              state:
+                                type: string
+                              postalCode:
+                                type: string
+                              country:
+                                type: string
+                        contacts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              name:
+                                type: string
+                              email:
+                                type: string
+                              phone:
+                                type: string
+                              fax:
+                                type: string
+                              receiveNotifications:
+                                type: string
+                              notificationMethod:
+                                type: string
+                        notifications:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                        originTerminal:
+                          properties:
+                            number:
+                              type: string
+                            name:
+                              type: string
+                            address:
+                              properties:
+                                line:
+                                  type: array
+                                  items:
+                                    type: string
+                                city:
+                                  type: string
+                                state:
+                                  type: string
+                                postalCode:
+                                  type: string
+                                country:
+                                  type: string
+                              type: object
+                            telephone:
+                              type: string
+                            fax:
+                              type: string
+                            email:
+                              type: string
+                          type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        format: int32
+                      message:
+                        type: string
+                      details:
+                        type: string
+                      validationFailures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                            field:
+                              type: string
+        "400":
+          description: Missing or invalid path parameter. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  error:
+                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
+                      esponses/200/content/application~1json/schema/properties/\
+                      error"
+        "401":
+          description: Not authenticated. Data object will be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/respo\
+                  nses/400/content/application~1json/schema"
+        "403":
+          description: Not authorized. Data object will be empty.
           content:
             application/json:
               schema:
@@ -2115,7 +2254,6 @@ paths:
         "503":
           description: Service unavailable. Response body will be empty.
           content: {}
-      x-codegen-request-body-name: Change Pickup Request
     delete:
       tags:
         - Pickup
@@ -2123,6 +2261,7 @@ paths:
       description: Delete pickup request associated with an account. The request should
         include an Authorization header with a valid bearer token corresponding
         to the user associated with the pickup request.
+      operationId: deletePickupRequest
       parameters:
         - name: requestNumber
           in: path
@@ -2155,8 +2294,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/put/respo\
-                  nses/200/content/application~1json/schema"
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      requestNumber:
+                        type: string
+                  error:
+                    $ref: "#/paths/~1v1~1pickup-requests~1%7BrequestNumber%7D/get/r\
+                      esponses/200/content/application~1json/schema/properties/\
+                      error"
         "400":
           description: Missing or invalid path parameter. Data object will be empty.
           content:
@@ -2194,6 +2342,7 @@ paths:
         - Search Pickups
       summary: Search pickup request
       description: Displays pickup requests matching the specified search criteria.
+      operationId: findPickupRequestsByRequestNumber
       parameters:
         - name: request-number
           in: query
@@ -2219,19 +2368,23 @@ paths:
                       properties:
                         requestNumber:
                           type: string
-                        pro:
-                          type: string
+                        reconciledPros:
+                          type: array
+                          items:
+                            type: string
                         status:
                           properties:
-                            description:
+                            conciseStatus:
                               type: string
-                            reason:
-                              type: string
-                            reasonCode:
+                            expandedStatus:
                               type: string
                             referenceDate:
                               type: string
                             referenceTime:
+                              type: string
+                            reasonCode:
+                              type: string
+                            reason:
                               type: string
                           type: object
                         shipper:
@@ -2493,9 +2646,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/20\
-                        0/content/application~1json/schema/properties/data/item\
-                        s"
+                      type: string
                   error:
                     $ref: "#/paths/~1v1~1search~1pickup-requests/get/responses/200/\
                       content/application~1json/schema/properties/error"
@@ -2530,6 +2681,7 @@ paths:
       summary: Search Shipment Tracking records
       description: Displays Shipment tracking information matching the specified PRO search
         criteria.
+      operationId: findShipmentsByPRO
       parameters:
         - name: pro
           in: query
@@ -2742,6 +2894,7 @@ paths:
         in sets of 100. <br> The next set of 100 records can be accessed via the
         "next" URI string in the response JSON, until there are fewer than 100
         records remaining.
+      operationId: findShipmentsByAccount
       parameters:
         - name: account
           in: path
@@ -2961,6 +3114,7 @@ paths:
       summary: Create a new consumer
       description: Creates a consumer record with credentials to provide the user. Note
         that this response is the only time the Client Secret will be provided.
+      operationId: createAPIConsumer
       requestBody:
         description: Metadata to be stored along with consumers in MongoDB.
         content:
@@ -3065,6 +3219,7 @@ paths:
       summary: Get a set of Consumers
       description: Gets all TMS user consumer records. This includes the stored metadata
         about the users, but does not include Client Secrets.
+      operationId: getAllAPIConsumers
       security:
         - ApiKeyAuth: []
       responses:
@@ -3123,6 +3278,7 @@ paths:
         - API Consumer
       summary: Remove API Consumer
       description: Remove record of Consumer & associated API keys
+      operationId: deleteAPIConsumer
       security:
         - ApiKeyAuth: []
       responses:
@@ -3159,6 +3315,7 @@ paths:
       summary: Get consumer by Consumer Name
       description: Get a TMS user's consumer information. This includes the stored metadata
         about the user, but does not include the Client Secret.
+      operationId: getAPIConsumer
       parameters:
         - name: apiConsumerName
           in: path
@@ -3240,6 +3397,7 @@ paths:
       description: Update consumer record. <br>Developer Name, Title, Email, and Company
         can be updated. <br>The Client ID, Client Secret, and Consumer Name can
         not be updated.
+      operationId: updateAPIConsumer
       parameters:
         - name: apiConsumerName
           in: path
@@ -3316,6 +3474,7 @@ paths:
         auth.<br>MyEstes credentials can be used as well. <br>Note when an API
         key is generated for TMS users, a new ClientSecret will be provided for
         future requests to retrieve or delete the key.
+      operationId: createAPIKey
       security:
         - BasicAuth: []
       responses:
@@ -3386,6 +3545,7 @@ paths:
         - API Key
       summary: Retrieve API key
       description: Get the API key of API consumer
+      operationId: getAPIKey
       security:
         - BasicAuth: []
       responses:
@@ -3436,6 +3596,7 @@ paths:
         - API Key
       summary: Invalidate API key
       description: Delete API key of consumer
+      operationId: deleteAPIKey
       security:
         - BasicAuth: []
       responses:
@@ -3481,3 +3642,12 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Token returned by the authentication API for the user.
+tags:
+  - name: API Consumer
+  - name: API Key
+  - name: Authentication
+  - name: Invoice
+  - name: Pickup
+  - name: Search Pickups
+  - name: Search Shipments
+  - name: Shipments

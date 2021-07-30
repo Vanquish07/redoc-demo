@@ -1,3 +1,9 @@
+Returns specific invoice(s) corresponding to PRO or reference number.
+
+Either a PRO or Reference Number (PO or BOL) is required.
+
+Requires a valid bearer token in the Authorization header of the request.
+
 ## Invoice Object Definitions
 
 | Field | Description |     |

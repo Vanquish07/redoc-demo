@@ -74,6 +74,8 @@ paths:
       tags:
         - Invoice
       summary: Freight Invoices
+      description: 
+        $ref: https://vanquish07.github.io/redoc-demo/invoice-api.md                 
       operationId: getInvoices
       parameters:
         - name: pro
@@ -428,8 +430,6 @@ paths:
         "503":
           description: Service unavailable. Response body will be empty.
           content: {}
-      description: 
-        $ref: https://vanquish07.github.io/redoc-demo/invoice-api.md           
   /v1/shipments:
     get:
       tags:

@@ -74,10 +74,8 @@ paths:
       tags:
         - Invoice
       summary: Freight Invoices
-      description: Returns specific invoice(s) corresponding to PRO or reference number.
-        <br>Either a PRO or Reference Number (PO or BOL) is required.
-        <br>Requires a valid bearer token in the Authorization header of the
-        request.
+      description: 
+        $ref: https://vanquish07.github.io/redoc-demo/invoice-api.md 
       operationId: getInvoices
       parameters:
         - name: pro

@@ -1,0 +1,504 @@
+openapi: 3.0.0
+info:
+  title: EFW Domestic Shipment Rating API
+  description: >
+    [Estes Forwarding Worldwide](https://efwnow.com) has developed this
+    REST API to enable vendors to get rates for domestic shipments.  The
+    rates that are returned from this API are faster than than standard
+    ESTES LTL transit.
+  version: 1.0.0
+
+servers:
+  - url: https://api.efwnow.com
+    description: Production environment for domestic shipment rating API
+  - url: https://apitest.efwnow.com
+    description: Test environment for domestic shipment rating API
+
+tags:
+  - name: Domestic Shipment Rating
+    description: Retrieve Rates for Domestic Shipments
+  - name: Health
+    description: Health endpoints for liveness and readiness checks
+
+paths:
+  /v1/domestic/shipments/quotes/{quoteID}:
+    get:
+      tags:
+        - Domestic Shipment Rating
+      summary: Returns saved quotes from past ratings
+      description: Retrieve past rates by quote ID
+      operationId: GetRateLogRequestResponse
+      parameters:
+        - in: path
+          name: quoteID
+          schema: 
+            type: string
+            format: uuid
+          required: true  
+          description: ID of saved rate
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: Found the desired quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quotes"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+
+  /v1/domestic/shipments/quotes:
+    get:
+      tags:
+        - Domestic Shipment Rating
+      summary: Returns all saved quotes from past rate requests submitted for the customer
+      description: Retrieve past rates by customer
+      operationId: GetRateLogResponsesByCustomer
+      parameters:
+        - in: query
+          name: page
+          schema: 
+            type: number
+            example: 1
+          required: true
+          description: The number of the page to return
+        - in: query
+          name: pageSize
+          schema: 
+            type: number
+            example: 15
+          required: true
+          description: The number of records per page to return
+        - in: query
+          name: orderBy
+          schema: 
+            type: string
+            example: "created_date"
+          required: true
+          description: The name of the value to order the records by
+        - in: query
+          name: orderDirection
+          schema: 
+            type: string
+            example: 'DESC'
+          required: true
+          description: Order direction ASC or DESC to order records by
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: Found the desired list of quotes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteList"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+
+  /v1/domestic/shipments/rates:
+    post:
+      tags:
+        - Domestic Shipment Rating
+      summary: Use provided domestic shipment information and return rates
+      description: This POST endpoint returns rates for the domestic shipment information provided
+      operationId: getRatesForDomesticShipment
+      requestBody:
+        $ref: "#/components/requestBodies/DomesticShipmentBody"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rates"
+        400:
+          description: Unable to Return Rates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+
+
+  /v1/domestic/shipments/rates/romas:
+    post:
+      tags:
+        - Domestic Shipment Rating
+      summary: Use provided domestic shipment information and return rates
+      description: This POST endpoint returns rates for the domestic shipment information provided
+      operationId: getRatesForDomesticShipment
+      requestBody:
+        $ref: "#/components/requestBodies/DomesticShipmentBody"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rates"
+        400:
+          description: Unable to Return Rates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+
+  /v1/domestic/shipments/rates/health/liveness:
+    get:
+      tags:
+        - Health
+      summary: Liveness endpoint to check if service is running
+      description: Liveness endpoint to check if service is running
+      operationId: livenessCheck
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+
+  /v1/domestic/shipments/rates/health/readiness:
+    get:
+      tags:
+        - Health
+      summary: Readiness endpoint to check if service is ready to receive traffic
+      description: Readiness endpoint to check if service is ready to receive traffic
+      operationId: readinessCheck
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: appKey
+
+  requestBodies:
+    DomesticShipmentBody:
+      description: Body required to post and request rates for a domestic shipment
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DomesticShipment"
+
+  schemas:
+    QuoteList:
+      type: object
+      properties:
+        page:
+          type: number
+          format: integer
+          example: 1
+          description: Number of the page returned
+        pageSize:
+          type: number
+          format: integer
+          example: 15
+          description: Number of records per page
+        totalPages:
+          type: number
+          format: integer
+          example: 30
+          description: Total number of pages that can be retrieved
+        data: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Quotes"
+
+    Quotes:
+      type: object
+      properties:
+        logRateID:
+          type: number
+          format: integer
+          example: 1
+        customerID:
+          type: string
+          example: A1234
+        shipmentDetails:
+          type: object
+          $ref: "#/components/schemas/DomesticShipment"
+        quoteDetails:
+          type: object
+          $ref: "#/components/schemas/Rates"
+        createdDate:
+          type: string
+          format: datetime
+          example: "2019-01-10T00:00:00Z"
+
+    DomesticShipment:
+      type: object
+      required:
+        - originCity
+        - originState
+        - originZip
+        - originCountry
+        - destinationCity
+        - destinationState
+        - destinationZip
+        - destinationCountry
+        - pickupDateTime
+        - commodities
+      properties:
+        originCity:
+          type: string
+          example: "Richmond"
+        originState:
+          type: string
+          example: "VA"
+        originZip:
+          type: string
+          description: "Required Field: originating zip code. Supported Zip code format are for countries like US, Mexico & Canada. The zip pattern validation will be using RegEx: '^(\\d{5}(-\\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$'"
+          pattern: ^(\d{5}(-\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$
+          example: "23234"
+        originCountry:
+          type: string
+          example: "US"
+        destinationCity:
+          type: string
+          example: "Homestead"
+        destinationState:
+          type: string
+          example: "FL"
+        destinationZip:
+          type: string
+          description: "Required Field: destination zip code. Supported Zip code format are for countries like US, Mexico & Canada. The zip pattern validation will be using RegEx: '^(\\d{5}(-\\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$'"
+          pattern: ^(\d{5}(-\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$
+          example: T5J 0N3
+        requestedPickupDateTime:
+          type: string
+          description: "Required Field: Date/time that pickup is requested by"
+          format: datetime
+          example: "2019-01-10T00:00:00Z"
+        pickupLocationCloseDateTime:
+          type: string
+          description: "Required Field: Date/time that location closes"
+          format: datetime
+          example: "2019-01-10T00:00:00Z"
+        declaredValue:
+          type: number
+          format: float
+          description: "Declared value of the domestic shipment"
+          example: 109.99
+        palletized:
+          type: string
+          description: "Y or N indicator for palletized shipment"
+          example: "N"
+        stackable:
+          type: string
+          description: "Y or N indicator for stackable shipment"
+          example: "Y"
+        accessorials:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccessorialCode"
+        commodities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Commodity"
+
+    AccessorialCode:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "Accessorial Code"
+          example: "DVAL"
+
+    Commodity:
+      type: object
+      required:
+        - numberOfPieces
+        - pieceTypeCode
+        - weightPerPiece
+      properties:
+        class:
+          type: string
+          description: "Commodity class"
+          example: "500"
+        pieceTypeCode:
+          type: string
+          description: "Three Character commodity piece type code"
+          example: "BOX"
+        numberOfPieces:
+          type: number
+          format: integer
+          description: "Number of pieces"
+          example: 4
+        weightPerPiece:
+          type: number
+          format: integer
+          description: "Weight in lbs per commodity piece"
+          example: 200
+        length:
+          type: string
+          description: "Commodity length in inches"
+          example: "30"
+        width:
+          type: string
+          description: "Commodity width in inches"
+          example: "70"
+        height:
+          type: string
+          description: "Commodity height in inches"
+          example: "50"
+        hazmat:
+          type: string
+          description: "Y or N indicator if commodity is hazmat"
+          example: "N"
+
+    ValidationResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/ValidationError"
+
+    ValidationError:
+      type: object
+      properties:
+        errorKey:
+          type: string
+          description: "Field which contain an error"
+          example: "originZip"
+        validationError:
+          type: string
+          description: "Detailed Error description"
+          example: "Field is required"
+    Rates:
+      type: object
+      properties:
+        quoteId:
+          type: string
+          description: "Quote number for domestic shipment"
+          minLength: 1
+          example: "7f414cbb-8434-4c0c-a085-beaaa22199f9"
+        terminalContactEmail:
+          type: string
+          description: "Terminal Contact Email"
+          minLength: 1
+          example: "efwpriority@efwnow.com"
+        terminalContactPhone:
+          type: string
+          description: "Terminal Contact Phone"
+          minLength: 1
+          example: "855-339-3797"
+        disclaimer:
+          type: string
+          description: "Disclaimer"
+          minLength: 1
+          example: "Shipments booked after 3pm local time are subject to availability"
+        rates:
+          type: array
+          items:
+            $ref: "#/components/schemas/Rate"
+    Rate:
+      type: object
+      properties:
+        serviceLevelID:
+          type: string
+          description: "Service level ID for domestic shipment"
+          example: "ND"
+        deliveryDate:
+          type: string
+          format: date-time
+          description: "Delivery date"
+          example: "2020-10-06T12:00:00Z"
+        standardFreightCharge:
+          type: number
+          format: float
+          description: "Standard freight charge"
+          example: 109.99
+        fuelSurcharge:
+          type: number
+          format: float
+          description: "Fuel Surcharge"
+          example: 109.99
+        accessorialChargeTotal:
+          type: number
+          format: float
+          description: "Accessorial charge total"
+          example: 109.99
+        standardTotalRate:
+          type: number
+          format: float
+          description: "Standard total rate"
+          example: 159.99
+        accessorialCharges:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccessorialCharge"
+        meta:
+          type: object
+          $ref: "#/components/schemas/RateMeta"     
+
+    RateMeta:
+      type: object
+      properties:
+        serviceLevel:
+          type: object
+          $ref: "#/components/schemas/ServiceLevelMeta"
+
+    ServiceLevelMeta:
+      type: object
+      properties:
+        order:
+          type: number
+          description: the priority sorting order of the service
+          example: 1
+        type:
+          type: string  
+          description: service level category level
+          example: "D"
+
+
+
+    AccessorialCharge:
+      type: object
+      properties:
+        chargeCode:
+          type: string
+          description: "Code for Accessorial Charge"
+          example: "LGDL"
+        chargeDesc:
+          type: string
+          description: "Description of Accessorial Charge"
+          example: "Liftgate Delivery"
+        chargeAmount:
+          type: number
+          format: float
+          description: "Accessorial Charge"
+          example: 94.78

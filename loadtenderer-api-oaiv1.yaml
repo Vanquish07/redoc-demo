@@ -1,0 +1,700 @@
+swagger: '2.0'
+info:
+  title: EFW Shipping API
+  version: 1.0.0
+  description: >
+    [Estes Forwarding Worldwide](https://efwnow.com) has developed this
+    REST API to enable our partners to easily and securely integrate with our
+    Shipping service.
+
+host: api.efwnow.com
+schemes:
+  - https
+basePath: /
+produces:
+  - application/json
+securityDefinitions:
+  app_id:
+    type: apiKey
+    in: query
+    name: app_id
+  app_key:
+    type: apiKey
+    in: query
+    name: app_key
+paths:
+  /shipments:
+    post:
+      tags:
+        - Shipping Domestic
+      summary: This is used to create a new shipment
+      description: Description for creating a new shipment.  This assumes customer is on a shipping tariff and does not need a rate quoted.
+      consumes:
+        - 'application/json'
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - in: body
+        name: shipment
+        description: The shipment to create.
+        required: true
+        schema:
+          $ref: "#/definitions/PostShipment"
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: Get shipments
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: Get shipments
+      responses:
+        201:
+          description: created
+        400:
+          description: 'Unable to create record'
+  /v1/shipments/domestic:
+    post:
+      tags:
+        - Shipping Domestic
+      summary: Create a new shipment.
+      description: This is used to create a new shipment from an existing quote.
+      consumes:
+        - 'application/json'
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - in: body
+        name: shipment
+        description: The shipment to create.
+        required: true
+        schema:
+          $ref: "#/definitions/PostQuotedShipment"
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: Get shipments
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: Get shipments
+      responses:
+        201:
+          description: created
+        400:
+          description: 'Unable to create record'
+
+  /shipments/{trackingNbr}:
+    patch:
+      tags:
+        - Shipping Domestic
+      summary: This is used to update the shipment.
+      description: Customers can use this enpoint to update the pickup dates and pickup instructions for existing shipments.
+      consumes:
+        - 'application/json'
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - name: trackingNbr
+        type: number
+        in: path
+        required: true
+        description: Tracking Number for Patching the existing shipment
+      - in: body
+        name: request
+        description: The requestedPickupDateTime and latestPickupDate to patch existing shipment.
+        required: true
+        schema:
+          $ref: "#/definitions/ShipmentUpdate"
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: AppId of the customer.
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: App Key of the customer.
+      responses:
+        '204':
+          description: Patch shipment data
+    delete:
+      tags:
+        - Shipping Domestic
+      summary: This is used to request deleteing the walmart return shipment 
+      description: Shippers can use this to request for deleting existing shipment (Currently implemented only for Walmart Returns)..
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - name: shipmentId
+        type: number
+        in: path
+        required: true
+        description: Shipment Id for deleting the existing shipment
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: AppId of the customer.
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: App Key of the customer.
+      responses:
+        '202':
+          description: Returns Id for the Accepted delete job.
+          schema:
+            $ref: "#/definitions/AcceptedDeleteReq"
+
+
+  /shipments/kuebix:
+    post:
+      tags:
+        - Kuebix Domestic Shippment
+      summary: This is used to create a new shipment for Kuebix.
+      description: Description for creating a new shipment.  This assumes customer is on a shipping tariff and does not need a rate quoted.
+      consumes:
+        - 'application/json'
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - in: body
+        name: shipment
+        description: The shipment to create.
+        required: true
+        schema:
+          $ref: "#/definitions/PostShipment"
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: Get shipments
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: Get shipments
+      responses:
+        201:
+          description: created
+        400:
+          description: 'Unable to create record'
+
+  /shipments/return:
+    post:
+      tags:
+       - Shipping Domestic
+      summary: Submit a Return Shipment. Packaging state, location & number of pieces can be specified.
+      consumes:
+        - 'application/json'
+      security:
+        - app_id: []
+          app_key: []
+      parameters:
+      - in: body
+        name: shipment
+        description: The shipment to create.
+        required: true
+        schema:
+          $ref: "#/definitions/ScheduleShipment"
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: Get shipments
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: Get shipments
+      responses:
+        201:
+          description: created
+        400:
+          description: 'Unable to create record'
+
+  /shipments/pickup:
+    get:
+      tags:
+        - Shipping Domestic
+      summary: Return pickup windows for return shipments.
+      parameters:
+      - in: query
+        name: app_id
+        type: string
+        required: true
+        description: AppId of Customer.
+      - in: query
+        name: app_key
+        type: string
+        required: true
+        description: App Key of Customer.
+      security:
+        - app_id: []
+          app_key: []
+      responses:
+        '200':
+          description: Returns Available date and time windows.
+          schema:
+            $ref: "#/definitions/PickupWindows"
+
+  /healthcheck:
+    get:
+      tags:
+        - Health
+      summary: Liveness endpoint to check if service is running
+      description: Liveness endpoint to check if service is running
+      operationId: livenessCheck
+      responses:
+        200:
+          description: OK
+        500:
+          description: Internal Server Error
+
+definitions:
+
+  ShipmentUpdate:
+    properties:
+      requestedPickupDateTime:
+        type: string
+        description: "Required Field: Date/time that pickup is requested by"
+        format: datetime
+        example: '2019-01-10T00:00:00Z'
+      latestPickupDate:
+        type: string
+        description: "Required Field: Date/time that pickup is requested by"
+        format: datetime
+        example: '2019-01-10T00:00:00Z'
+      pieceType:
+        type: string
+        description: "Optional Field: Information to indicate if shipment package pieces are boxed or packaged"
+        format: string
+        example: 'All item(s) are boxed or packaged'
+      mattress:
+        type: string
+        description: "Optional Field: Information to indicate if shipment package includes a mattress"
+        format: string
+        example: 'One of the item(s) is a mattress'
+      numberOfPieces:
+        type: string
+        description: "Optional Field: Indicates number of pieces included in shipment package"
+        format: string
+        example: 'Total of all items is 999 pieces'
+      packageLocation:
+        type: string
+        description: "Optional Field: Indicates where shipment package is located"
+        format: string
+        example: 'At least one item is too heavy to place outside. Item(s) are located inside home or garage'        
+      driverNotes:
+        type: string
+        description: "Optional Field: Any additional information for the driver"
+        format: string
+        example: 'Yellow house in the cul-de-sac'        
+        
+  PickupWindows:
+    type: array
+    items:
+      type: object
+      properties:
+        from:
+          type: string
+          description: "Available Date/time pickup window from"
+          format: string
+          example: '2019-01-10T12:00:00Z'
+        to:
+          type: string
+          description: "Available Date/time pickup window to"
+          format: string
+          example: '2019-01-10T16:00:00Z'
+          
+  AcceptedDeleteReq:
+      properties:
+        Id:
+          type: string
+          description: "the Delete request Id."
+          format: string
+          example: 'XBg2anf2TqCy6WXKQFhieQ.filter0905p1mdw1-4434-59E0C6FF-3.0'
+      
+          
+  ScheduleShipment:
+    allOf: 
+      -  $ref: "#/definitions/PostShipment"
+    type: object
+    properties: 
+      originalPacking:
+        type: string
+        description: "Optional: Indicates if shipment is in it's original packaging"
+      itemOutside:
+        type: string
+        description: "Optional: Indicates if the shipment is located outside"
+      totalPieces:
+        type: string
+        description: "Optional: Indicates the number of pieces within the shipment package"
+        
+  PostQuotedShipment:
+    type: object
+    required:
+      - quoteID
+      - worldTrakQuoteId
+      - requestedPickupDateTime
+      - respondByDatetime
+      - requestedDeliveryDateTime
+      - latestPickUpDatetime  
+      - shipper
+      - consignee
+      - billing
+      - referenceNumbers
+      - shipNotes
+      - containsHazmat
+    properties: #This needs to include some sort of rate or PO as well
+      quoteId:
+        type: string
+        description: The ID received with the quote  
+        format: uuid
+        example: 06da5316-b1ea-4f44-9ea6-7aed8d80e7fc
+      serviceLevelQuoteId:
+        type: string
+        description: service level quote id
+        example: 12345  
+      controlCustAcctNum:
+        type: string
+        example: 123456
+        description: "Add Control customer account number"
+      requestedPickupDateTime:
+        type: string
+        description: "Required Field: Date/time that pickup is requested by"
+        format: datetime
+        example: '2019-01-10T00:00:00Z'
+      respondByDatetime:
+        type: string
+        description: "Date/time that pickup response is requested"
+        format: datetime
+        example: '2019-01-7T18:00:00-04:00'
+      requestedDeliveryDateTime:
+        type: string
+        description: "Date/time that delivery is requested by"
+        format: datetime
+        example: '2019-01-7T00:00:00+04:00'
+      latestPickUpDatetime:
+        type: string
+        description: "Required Field: Date/time that is the latest time the shipment can be picked up"
+        format: datetime
+        example: '2019-01-7T12:30:00.000-03:00'
+      shipNotes:
+        type: string
+        example: 'Pick up at the dock'
+        description: "Add the Shipping Notes"
+      callInPhone:
+        type: string
+        description: "Phone number for the person who called in. Any Characters minimum 10 to Maximum 30"
+        pattern: ^.{10,30}$
+        example: 1234567890
+      callInExt:
+        type: string
+        description: "Extension for the person who called in the shipment - varchar(10)"
+        pattern: ^\d+$
+      callInEmail:
+        type: string
+        description: "Email address for person submitting the shipment - varchar(255)"
+        format: email
+      containsHazmat:
+        type: boolean
+        default: false
+        description: "Is shipment contains Hazmat ?"
+      shipper:
+        $ref: "#/definitions/Contact"
+      consignee:
+        $ref: "#/definitions/Contact"
+      billing:
+        $ref: "#/definitions/BillingContact"
+      referenceNumbers:
+        type: array
+        items:
+          $ref: "#/definitions/ShipmentReferenceNumber"
+            
+  PostShipment:
+    type: object
+    required:
+      - shipId
+      - requestedPickupDateTime
+      - serviceLevelCode
+      - shipper
+      - consignee
+      - billing
+      - freight
+      - referenceNumbers
+    properties: #This needs to include some sort of rate or PO as well
+      shipId:
+        type: string
+        description: "Required Field: Customer unique identifier for shipment - varchar(30)"
+        minLength: 1
+        pattern: \S
+      controlCustAcctNum:
+        type: string
+        example: 123456
+        description: "Add Control customer account number"
+      referenceNum:
+        type: string
+        description: "Customer reference number for shipment - varchar(30)"
+      requestedPickupDateTime:
+        type: string
+        description: "Required Field: Date/time that pickup is requested by"
+        format: datetime
+        example: '2019-01-10T00:00:00Z'
+      respondByDatetime:
+        type: string
+        description: "Date/time that pickup response is requested"
+        format: datetime
+        example: '2019-01-7T18:00:00-04:00'
+      requestedDeliveryDateTime:
+        type: string
+        description: "Date/time that delivery is requested by"
+        format: datetime
+        example: '2019-01-7T00:00:00+04:00'
+      latestPickUpDatetime:
+        type: string
+        description: "Required Field: Date/time that is the latest time the shipment can be picked up"
+        format: datetime
+        example: '2019-01-7T12:30:00.000-03:00'
+      shipNotes:
+        type: string
+        example: 'Pick up at the dock'
+        description: "Add the Shipping Notes"
+      purchaseOrderNum:
+        type: string
+        example: "PO124"
+        description: "Optional purchase order number for shipment - varchar(30)"
+      callInPhone:
+        type: string
+        description: "Phone number for the person who called in. Any Characters minimum 10 to Maximum 30"
+        pattern: ^.{10,30}$
+        example: 1234567890
+      callInExt:
+        type: string
+        description: "Extension for the person who called in the shipment - varchar(10)"
+        pattern: ^\d+$
+      callInEmail:
+        type: string
+        description: "Email address for person submitting the shipment - varchar(255)"
+        format: email
+      quoteContactEmail:
+        type: string
+        description: "Email address(es) for contact people regarding the quote - varchar(1000)"
+        format: email
+      serviceLevelCode:
+        type: string
+        enum: [2A,2D,3D,4D,5D,CH,CT,DR,DS,DT,EC,EG,EX,FB,FS,GS,HC,ID,L1,L2,LS,NA,ND,P1,P2,PD,PL,RC,RD,RI,RN,RT,S1,S2,SD,SV,TB,TD,TH,TL,TR,WA,WD,WG,WH,FN]
+        description: "Required Field: Need the valid options here"
+      containsHazmat:
+        type: boolean
+        default: false
+        description: "Is shipment contains Hazmat ?"
+      quoteAmount:
+        type: number
+        format: float64
+      accessorials:
+         type: array
+         items:
+          type: string
+      shipper:
+        $ref: "#/definitions/Contact"
+      consignee:
+        $ref: "#/definitions/Contact"
+      billing:
+        $ref: "#/definitions/BillingContact"
+      freight:
+        type: array
+        items:
+          $ref: "#/definitions/FreightItem"
+      referenceNumbers:
+        type: array
+        items:
+          $ref: "#/definitions/ShipmentReferenceNumber"
+          
+  FreightItem:
+    type: object
+    required:
+      - type
+      - length
+      - width
+      - height
+      - weight
+      - pieces
+      - description
+    properties:
+      type:
+        type: string
+        description: "varchar(5) from a lookup"
+        minLength: 1
+        pattern: \S
+      length:
+        type: number
+        format: float64
+      width:
+        type: number
+        format: float64
+      height:
+        type: number
+        format: float64
+      weight:
+        type: number
+        format: float64
+      pieces:
+        type: integer
+      description:
+        type: string
+        minLength: 1
+        pattern: \S
+
+  ShipmentReferenceNumber:
+    type: object
+    required:
+      - class
+      - number
+    properties:
+      class:
+        type: string
+        description: "Required Field: choose the class for the shipment reference number from - BKG, BL, GBL, HTN, HWB, INV, JOB, KR, LD#, MOV, MWB, OFR, ORD, PKL, PKU, PO, PRG, PRO, PRT, REF, RMA, SAN, SH#, SHO, SO, SPN, TCN, TO, XID"
+        enum: [XID, BKG, BL, GBL, HTN, HWB, INV, JOB, KR, LD#, MOV, MWB, OFR, ORD, PKL, PKU, PO, PRG, PRO, PRT, REF, RMA, SAN, SH#, SHO, SO, SPN, TCN, TO]
+      number:
+        type: string
+        description: "Required Field: shipment reference number"
+        example: "PO1234"
+        minLength: 1
+        pattern: \S
+  Contact:
+    type: object
+    required:
+      - name
+      - street
+      - city
+      - state
+      - zip
+      - countryCode
+      - phone
+    properties:
+      name:
+        type: string
+        example: Acme Co.
+        minLength: 1
+        pattern: \S
+        description: "Required Field: name of the contact."
+      name2:
+        type: string
+        example: Acme Co.
+        description: "additional field for name of the contact."
+      street:
+        type: string
+        example: 123 Road St.
+        minLength: 1
+        pattern: \S
+        description: "Required Field: Street address of the contact."
+      street2:
+        type: string
+        example: Suite 255
+        description: "additional Street field for address of the contact."
+      city:
+        type: string
+        example: Ottawa
+        minLength: 1
+        pattern: \S
+        description: "Required Field: city of the contact."
+      state:
+        type: string
+        example: ON
+        pattern: ^[A-Z]{2}$
+        minLength: 1
+        description: "Required Field: State of the contact."
+      zip:
+        type: string
+        example: K1A 0B1
+        description: "Required Field: zip number of the contact. Supported Zip code format are for countries like US, Mexico & Canada. The zip pattern validation will be using RegEx: '^(\\d{5}(-\\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$'"
+        pattern: ^(\d{5}(-\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$
+      countryCode:
+        type: string
+        example: CA
+        pattern: ^[A-Z]{2}$
+        description: "Required Field: country code of the contact."
+      phone:
+        type: string
+        description: "Required Field: Phone number for the person who called in. Any Characters minimum 10 to Maximum 30"
+        pattern: ^.{10,30}$
+        example: 1234567890
+      email:
+        type: string
+        example: test@test.com
+        format: email
+        description: "add the email address of the contact if available."
+  BillingContact:
+    type: object
+    required:
+      - name
+      - street
+      - city
+      - state
+      - zip
+      - countryCode
+      - phone
+    properties:
+      name:
+        type: string
+        example: Acme Co.
+        minLength: 1
+        pattern: \S
+        description: "Required Field: name of the contact."
+      name2:
+        type: string
+        example: Acme Co.
+        description: "additional field for name of the contact."
+      street:
+        type: string
+        example: 123 Road St.
+        minLength: 1
+        pattern: \S
+        description: "Required Field: Street address of the contact."
+      street2:
+        type: string
+        example: Suite 255
+        description: "additional Street field for address of the contact."
+      city:
+        type: string
+        example: New York
+        minLength: 1
+        pattern: \S
+        description: "Required Field: city of the contact."
+      state:
+        type: string
+        example: NY
+        pattern: ^[A-Z]{2}$
+        description: "Required Field: State of the contact."
+      zip:
+        type: string
+        example: 10001
+        description: "Required Field: zip number of the contact. Supported Zip code format are for countries like US, Mexico & Canada. The zip pattern validation will be using RegEx: '^(\\d{5}(-\\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$'"
+        pattern: ^(\d{5}(-\d{4})?|[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])$
+      countryCode:
+        type: string
+        example: US
+        pattern: ^[A-Z]{2}$
+        description: "Required Field: country code of the contact."
+      phone:
+        type: string
+        description: "Required Field: Phone number for the person who called in. Any Characters minimum 10 to Maximum 30"
+        pattern: ^.{10,30}$
+        example: 1234567890
+      email:
+        type: string
+        example: test@test.com
+        format: email
+        description: "add the email address of the contact if available."
